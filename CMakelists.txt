@@ -1,0 +1,19 @@
+cmake_minimum_required(VERSION 3.15)
+
+project(SRDrones VERSION 0.1.0 LANGUAGES CSharp)
+
+include(CSharpUtilities)
+
+execute_process(COMMAND CMD /c powershell ${CMAKE_CURRENT_LIST_DIR}/FindUnity.ps1 OUTPUT_VARIABLE UnityLocation)
+
+message("Unity location: ${UnityLocation}")
+
+file(GLOB_RECURSE SRMLSources
+    ${CMAKE_CURRENT_LIST_DIR}/SRML/SRML/*.*
+)
+
+file(GLOB_RECURSE SourceFiles
+    ${CMAKE_CURRENT_LIST_DIR}/Source/*.*
+)
+
+add_executable(SRDrones ${SourceFiles} ${SRMLSources})
