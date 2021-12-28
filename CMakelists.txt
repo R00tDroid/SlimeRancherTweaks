@@ -26,3 +26,5 @@ LIST(APPEND VS_DOTNET_REFERENCES "${UnityLibraries}\\UnityEditor.dll")
 set_target_properties(SRDrones PROPERTIES
     VS_DOTNET_REFERENCES "${VS_DOTNET_REFERENCES}"
 )
+
+target_compile_options(SRDrones PUBLIC "/unsafe")
