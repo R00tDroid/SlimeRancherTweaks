@@ -19,6 +19,7 @@ file(GLOB_RECURSE SourceFiles
 add_executable(SRDrones ${SourceFiles} ${SRMLSources})
 
 LIST(APPEND VS_DOTNET_REFERENCES "System")
+LIST(APPEND VS_DOTNET_REFERENCES "${CMAKE_CURRENT_LIST_DIR}\\Libs\\Assembly-CSharp.dll")
 LIST(APPEND VS_DOTNET_REFERENCES "${UnityLibraries}UnityEngine.dll")
 LIST(APPEND VS_DOTNET_REFERENCES "${UnityLibraries}UnityEditor.dll")
 
