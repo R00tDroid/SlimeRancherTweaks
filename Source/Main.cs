@@ -73,7 +73,7 @@ namespace SRDrones
     {
         public override string Usage => "dronelimit [count]";
         public override string ID => "dronelimit";
-        public override string Description => "gets or sets the number of drones per ranch extension";
+        public override string Description => "gets or sets the number of drones per ranch expansion";
 
         public override bool Execute(string[] args)
         {
