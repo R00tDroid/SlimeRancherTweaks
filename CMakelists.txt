@@ -7,20 +7,12 @@ include(CSharpUtilities)
 file (STRINGS "${CMAKE_CURRENT_LIST_DIR}\\Libs\\GameLocation.txt" GameLocation)
 message("Game location: ${GameLocation}")
 
-file(GLOB_RECURSE SRMLSources
-    ${CMAKE_CURRENT_LIST_DIR}/SRML/SRML/*.*
-)
-
-add_library(SRML SHARED ${SRMLSources})
-
-set_property(TARGET SRML PROPERTY VS_CONFIGURATION_TYPE ClassLibrary)
-
 LIST(APPEND VS_DOTNET_REFERENCES "System")
 
 LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SRML\\Libs\\0Harmony.dll")
 LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SRML\\Libs\\INIFileParser.dll")
 LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SRML\\Libs\\Newtonsoft.Json.dll")
-LIST(APPEND VS_DOTNET_REFERENCES "${CMAKE_CURRENT_LIST_DIR}\\Libs\\MonomiPark.SlimeRancher.dll")
+LIST(APPEND VS_DOTNET_REFERENCES "${CMAKE_CURRENT_LIST_DIR}\\Libs\\Assembly-CSharp.dll")
 
 LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.CoreModule.dll")
 LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.IMGUIModule.dll")
@@ -36,27 +28,13 @@ LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\U
 LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\Unity.TextMeshPro.dll")
 LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.UI.dll")
 LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\InControl.dll")
-
-set_target_properties(SRML PROPERTIES
-    VS_DOTNET_REFERENCES "${VS_DOTNET_REFERENCES}"
-)
-
-set_target_properties(SRML PROPERTIES
-    VS_PACKAGE_REFERENCES "${VS_PACKAGE_REFERENCES}"
-)
-
-set_target_properties(SRML PROPERTIES
-    DOTNET_TARGET_FRAMEWORK_VERSION "v4.6.1"
-)
-
-
-
+LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\SRML.dll")
 
 file(GLOB_RECURSE SourceFiles
     ${CMAKE_CURRENT_LIST_DIR}/Source/*.*
 )
 
-add_executable(SRDrones ${SourceFiles})
+add_library(SRDrones SHARED ${SourceFiles})
 
 LIST(APPEND VS_DOTNET_REFERENCES "System")
 

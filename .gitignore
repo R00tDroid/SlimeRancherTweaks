@@ -58,5 +58,5 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
-/Libs/MonomiPark.SlimeRancher.dll
+/Libs/Assembly-CSharp.dll
 /Libs/GameLocation.txt
