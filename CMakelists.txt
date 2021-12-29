@@ -31,13 +31,16 @@ LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\I
 LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\SRML.dll")
 
 file(GLOB_RECURSE SourceFiles
-    ${CMAKE_CURRENT_LIST_DIR}/Source/*.*
+    ${CMAKE_CURRENT_LIST_DIR}/Source/*.cs
 )
 
-add_library(SRDrones SHARED ${SourceFiles})
+set(ResourceFiles
+    ${CMAKE_CURRENT_LIST_DIR}/Source/modinfo.json
+)
 
-LIST(APPEND VS_DOTNET_REFERENCES "System")
+add_library(SRDrones SHARED ${SourceFiles} ${ResourceFiles})
 
+set_property(SOURCE ${ResourceFiles} PROPERTY VS_TOOL_OVERRIDE "EmbeddedResource")
 
 set_target_properties(SRDrones PROPERTIES
     VS_DOTNET_REFERENCES "${VS_DOTNET_REFERENCES}"
