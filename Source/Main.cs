@@ -1,56 +1,61 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using SRML;
 using HarmonyLib;
-using SRML.Utils;
 using SRML.SR;
 
-namespace SampleMod
+namespace SRDrones
 {
     public class Main : ModEntryPoint
     {
-        // Called before GameContext.Awake
-        // this is where you want to register stuff (like custom enum values or identifiable id's)
-        // and patch anything you want to patch with harmony
-        public void PreLoad()
+        private static uint DroneLimit = 10; // Default 2;
+        private static uint DroneSpeedMultiplier = 100; // Default 100;
+        private static uint DroneInventoryMax = 100; // Default 50
+
+        public override void PreLoad()
         {
-            Debug.Log("We did it!");
             HarmonyPatcher.GetInstance().PatchAll(Assembly.GetExecutingAssembly());
 
-
-            // this code registers a callback that's run every time a saved game is loaded
-            // in this case it spawns a mosaic boom largo
             SRCallbacks.OnSaveGameLoaded += (scenecontext) =>
             {
-                   
-                var playerModel = SceneContext.Instance.GameModel.GetPlayerModel();
-                SRBehaviour.InstantiateActor(
-                    GameContext.Instance.LookupDirector.GetPrefab(Identifiable.Id.MOSAIC_BOOM_LARGO),MonomiPark.SlimeRancher.Regions.RegionRegistry.RegionSetId.UNSET,playerModel.position,
-                    playerModel.rotation);
+                Debug.Log("Injecting new drone parameters");
+
+                // Set drone limit per ranch expansion
+                {
+                    LookupDirector lookupDirector = SRBehaviour.FindObjectOfType<LookupDirector>();
+                    GadgetDefinition droneGadget = lookupDirector.GetGadgetDefinition(Gadget.Id.DRONE);
+                    droneGadget.countLimit = (int) DroneLimit;
+
+                    droneGadget = lookupDirector.GetGadgetDefinition(Gadget.Id.DRONE_ADVANCED);
+                    droneGadget.countLimit = (int) DroneLimit;
+                }
+
+                // Set drone inventory limit
+                {
+                    MethodInfo methodOriginal = typeof(DroneAmmo).GetMethod("GetSlotMaxCount", new Type[] { });
+                    MethodInfo methodNew = typeof(Main).GetMethod("GetDroneMax", BindingFlags.Static | BindingFlags.Public);
+
+                    Debug.Log("Patching drone.ammo.GetSlotMaxCount: " + methodOriginal + " > " + methodNew);
+
+                    Harmony harmony = HarmonyPatcher.GetInstance();
+                    harmony.Patch(methodOriginal, new HarmonyMethod(methodNew));
+                }
+
+                // Set drone movement speed
+                Drone[] drones = SRBehaviour.FindObjectsOfType<Drone>();
+                foreach (Drone drone in drones)
+                {
+                    drone.movement.movementSpeed = 180 * (DroneSpeedMultiplier / 100.0f);
+                }
             };
         }
 
-
-        // Called right before PostLoad
-        // Used to register stuff that needs lookupdirector access
-        public override void Load()
+        // Function to override drone inventory limit
+        public static bool GetDroneMax(ref int __result)
         {
-            
-        }
-
-
-        // Called after GameContext.Start
-        // stuff like gamecontext.lookupdirector are available in this step, generally for when you want to access
-        // ingame prefabs and the such
-        public override void PostLoad()
-        {
-            Debug.Log("We did it! Again! ");
+            __result = (int)DroneInventoryMax;
+            return false;
         }
     }
-
 }
