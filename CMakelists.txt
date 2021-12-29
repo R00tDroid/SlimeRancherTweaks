@@ -4,15 +4,8 @@ project(SRDrones VERSION 0.1.0 LANGUAGES CSharp)
 
 include(CSharpUtilities)
 
-execute_process(COMMAND CMD /c powershell ${CMAKE_CURRENT_LIST_DIR}/FindUnity.ps1 OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE UnityLocation)
-set(UnityLibraries "${UnityLocation}\\Editor\\Data\\Managed")
-message("Unity library location: ${UnityLibraries}")
-
-execute_process(COMMAND CMD /c powershell ${CMAKE_CURRENT_LIST_DIR}/FindScriptAssemblies.ps1 \"${UnityLocation}\" OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE UnityAssembliesLocation)
-message("Unity script assemblies location: ${UnityAssembliesLocation}")
-
-
-
+file (STRINGS "${CMAKE_CURRENT_LIST_DIR}\\Libs\\GameLocation.txt" GameLocation)
+message("Game location: ${GameLocation}")
 
 file(GLOB_RECURSE SRMLSources
     ${CMAKE_CURRENT_LIST_DIR}/SRML/SRML/*.*
@@ -24,28 +17,29 @@ set_property(TARGET SRML PROPERTY VS_CONFIGURATION_TYPE ClassLibrary)
 
 LIST(APPEND VS_DOTNET_REFERENCES "System")
 
+LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SRML\\Libs\\0Harmony.dll")
+LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SRML\\Libs\\INIFileParser.dll")
+LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SRML\\Libs\\Newtonsoft.Json.dll")
 LIST(APPEND VS_DOTNET_REFERENCES "${CMAKE_CURRENT_LIST_DIR}\\Libs\\MonomiPark.SlimeRancher.dll")
 
-LIST(APPEND VS_DOTNET_REFERENCES "${UnityLibraries}\\UnityEngine\\UnityEngine.CoreModule.dll")
-LIST(APPEND VS_DOTNET_REFERENCES "${UnityLibraries}\\UnityEngine\\UnityEngine.IMGUIModule.dll")
-LIST(APPEND VS_DOTNET_REFERENCES "${UnityLibraries}\\UnityEngine\\UnityEngine.UIModule.dll")
-LIST(APPEND VS_DOTNET_REFERENCES "${UnityLibraries}\\UnityEngine\\UnityEngine.AnimationModule.dll")
-LIST(APPEND VS_DOTNET_REFERENCES "${UnityLibraries}\\UnityEngine\\UnityEngine.AssetBundleModule.dll")
-LIST(APPEND VS_DOTNET_REFERENCES "${UnityLibraries}\\UnityEngine\\UnityEngine.AudioModule.dll")
-LIST(APPEND VS_DOTNET_REFERENCES "${UnityLibraries}\\UnityEngine\\UnityEngine.PhysicsModule.dll")
-LIST(APPEND VS_DOTNET_REFERENCES "${UnityLibraries}\\UnityEngine\\UnityEngine.InputLegacyModule.dll")
-LIST(APPEND VS_DOTNET_REFERENCES "${UnityLibraries}\\UnityEngine\\UnityEngine.ParticleSystemModule.dll")
-LIST(APPEND VS_DOTNET_REFERENCES "${UnityLibraries}\\UnityEngine\\UnityEngine.ParticleSystemModule.dll")
+LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.CoreModule.dll")
+LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.IMGUIModule.dll")
+LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.UIModule.dll")
+LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.AnimationModule.dll")
+LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.AssetBundleModule.dll")
+LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.AudioModule.dll")
+LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.PhysicsModule.dll")
+LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.InputLegacyModule.dll")
+LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.ParticleSystemModule.dll")
+LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.ParticleSystemModule.dll")
 
-LIST(APPEND VS_DOTNET_REFERENCES "${UnityAssembliesLocation}\\Unity.TextMeshPro.dll")
-LIST(APPEND VS_DOTNET_REFERENCES "${UnityAssembliesLocation}\\UnityEngine.UI.dll")
+LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\Unity.TextMeshPro.dll")
+LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.UI.dll")
+LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\InControl.dll")
 
 set_target_properties(SRML PROPERTIES
     VS_DOTNET_REFERENCES "${VS_DOTNET_REFERENCES}"
 )
-
-LIST(APPEND VS_PACKAGE_REFERENCES "Lib.Harmony_2.1.1")
-LIST(APPEND VS_PACKAGE_REFERENCES "Newtonsoft.JSON_13.0.1")
 
 set_target_properties(SRML PROPERTIES
     VS_PACKAGE_REFERENCES "${VS_PACKAGE_REFERENCES}"
@@ -56,6 +50,8 @@ set_target_properties(SRML PROPERTIES
 )
 
 
+
+
 file(GLOB_RECURSE SourceFiles
     ${CMAKE_CURRENT_LIST_DIR}/Source/*.*
 )
@@ -63,18 +59,10 @@ file(GLOB_RECURSE SourceFiles
 add_executable(SRDrones ${SourceFiles})
 
 LIST(APPEND VS_DOTNET_REFERENCES "System")
-LIST(APPEND VS_DOTNET_REFERENCES "${CMAKE_CURRENT_LIST_DIR}\\Libs\\Assembly-CSharp.dll")
-LIST(APPEND VS_DOTNET_REFERENCES "${UnityLibraries}\\UnityEngine\\UnityEngine.CoreModule.dll")
-LIST(APPEND VS_DOTNET_REFERENCES "SRML")
+
 
 set_target_properties(SRDrones PROPERTIES
     VS_DOTNET_REFERENCES "${VS_DOTNET_REFERENCES}"
-)
-
-LIST(APPEND VS_PACKAGE_REFERENCES "Lib.Harmony_2.1.1")
-
-set_target_properties(SRDrones PROPERTIES
-    VS_PACKAGE_REFERENCES "${VS_PACKAGE_REFERENCES}"
 )
 
 set_target_properties(SRDrones PROPERTIES
