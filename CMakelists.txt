@@ -51,3 +51,7 @@ set_target_properties(SRDrones PROPERTIES
 )
 
 target_compile_options(SRDrones PUBLIC "/unsafe")
+
+add_custom_command(TARGET SRDrones POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SRDrones> "${GameLocation}\\SRML\\Mods\\SRDrones.dll"
+)
