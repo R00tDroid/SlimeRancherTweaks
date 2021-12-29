@@ -5,7 +5,7 @@ This mod allows uers to tweak various slime rancher aspects.
 ## Dependencies
 * CMake 3.15+
 * Visual Studio 2017+
-* Slime Rancher with SRML installed
+* Slime Rancher with [SRML](https://www.nexusmods.com/slimerancher/mods/2) installed
 * [AssemblyPublicizer](https://github.com/CabbageCrow/AssemblyPublicizer)
 
 ## Building
