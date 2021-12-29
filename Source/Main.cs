@@ -21,6 +21,8 @@ namespace SRDrones
 
             Console.RegisterCommand(new SetDroneLimitCommand());
 
+            SRCallbacks.OnSaveGameLoaded += context => SRSingleton<SceneContext>.Instance.Player.AddComponent<SRDronesConfigUI>();
+
             SRCallbacks.OnSaveGameLoaded += (scenecontext) =>
             {
                 Debug.Log("Injecting new drone parameters");
