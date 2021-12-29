@@ -39,7 +39,7 @@ namespace SRDrones
                 {
                     MethodInfo methodOriginal = typeof(DroneAmmo).GetMethod("GetSlotMaxCount", new Type[] { });
                     MethodInfo methodNew =
-                        typeof(Main).GetMethod("GetDroneMax", BindingFlags.Static | BindingFlags.Public);
+                        typeof(Main).GetMethod("GetDroneInventoryLimit", BindingFlags.Static | BindingFlags.Public);
 
                     Debug.Log("Patching drone.ammo.GetSlotMaxCount: " + methodOriginal + " > " + methodNew);
 
@@ -57,7 +57,7 @@ namespace SRDrones
         }
 
         // Function to override drone inventory limit
-        public static bool GetDroneMax(ref int __result)
+        public static bool GetDroneInventoryLimit(ref int __result)
         {
             __result = (int) DroneInventoryMax;
             return false;
