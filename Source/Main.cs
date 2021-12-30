@@ -8,7 +8,7 @@ using SRML.SR;
 using SRML.Console;
 using Console = SRML.Console.Console;
 
-namespace SRDrones
+namespace SRTweaks
 {
     public abstract class ITweak
     {
@@ -30,7 +30,7 @@ namespace SRDrones
 
             Console.RegisterCommand(new SetDroneLimitCommand());
 
-            SRCallbacks.OnSaveGameLoaded += context => SRSingleton<SceneContext>.Instance.Player.AddComponent<SRDronesConfigUI>();
+            SRCallbacks.OnSaveGameLoaded += context => SRSingleton<SceneContext>.Instance.Player.AddComponent<SRTweaksConfigUI>();
 
             tweaks = new ITweak[] { new DroneTweaks() };
 

@@ -7,7 +7,7 @@ using SRML.SR;
 using SRML.Console;
 using Console = SRML.Console.Console;
 
-namespace SRDrones
+namespace SRTweaks
 {
     public class DroneTweaks : ITweak
     {

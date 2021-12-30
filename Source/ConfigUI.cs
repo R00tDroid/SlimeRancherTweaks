@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace SRDrones
+namespace SRTweaks
 {
-    public class SRDronesConfigUI : MonoBehaviour
+    public class SRTweaksConfigUI : MonoBehaviour
     {
         private Rect windowRect = new Rect(20, 20, 350, 250);
         private bool windowVisible = false;
