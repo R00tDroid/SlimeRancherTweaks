@@ -28,6 +28,8 @@ namespace SRTweaks
 
             if (!windowVisible && !isPaused)
             {
+                LoadConfig();
+                
                 windowVisible = true;
                 previousInput = SRInput.Instance.GetInputMode();
                 SRInput.Instance.SetInputMode(SRInput.InputMode.NONE);
