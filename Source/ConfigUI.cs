@@ -8,8 +8,6 @@ namespace SRTweaks
         private bool windowVisible = false;
         private SRInput.InputMode previousInput;
 
-        private string droneLimit;
-
         void Awake()
         {
             LoadConfig();
@@ -48,17 +46,30 @@ namespace SRTweaks
 
         void LoadConfig()
         {
-            droneLimit = Main.DroneLimit.ToString();
+            foreach (ITweakBase tweak in Main.tweaks)
+            {
+                ITweakSettingsUI ui = tweak.GetSettingsUI();
+                if (ui != null)
+                {
+                    ui.Load();
+                }
+            }
         }
 
         void SaveConfig()
         {
-            if (uint.TryParse(droneLimit, out uint newValue))
+            foreach (ITweakBase tweak in Main.tweaks)
             {
-                Main.DroneLimit = newValue;
+                ITweakSettingsUI ui = tweak.GetSettingsUI();
+                if (ui != null)
+                {
+                    ui.Save();
+                }
             }
 
             LoadConfig();
+
+            Main.ApplySettings();
         }
 
         void OnGUI()
@@ -78,20 +89,20 @@ namespace SRTweaks
                 HideWindow();
             }
 
-            if (GUILayout.Button("Save"))
+            if (GUILayout.Button("Apply"))
             {
                 SaveConfig();
             }
 
             GUILayout.Space(10);
 
-            GUILayout.Label("Maximum amount of drones per ranch expansion");
-            string newValue = GUILayout.TextField(droneLimit, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
-            if (newValue != droneLimit)
+            foreach (ITweakBase tweak in Main.tweaks)
             {
-                if (uint.TryParse(newValue, out uint dummy))
+                ITweakSettingsUI ui = tweak.GetSettingsUI();
+                if (ui != null)
                 {
-                    droneLimit = newValue;
+                    ui.OnGUI();
+                    GUILayout.Space(2);
                 }
             }
 

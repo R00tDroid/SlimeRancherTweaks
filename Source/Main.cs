@@ -1,29 +1,60 @@
 ﻿using UnityEngine;
 using System.Reflection;
+using Sentry;
 using SRML;
 using SRML.SR;
 using SRML.Console;
 using SRML.SR.SaveSystem;
 using SRML.SR.SaveSystem.Registry;
-using Console = SRML.Console.Console;
 
 namespace SRTweaks
 {
-    public abstract class ITweak
+    public abstract class ITweakBase
     {
         public abstract void PreLoad();
         public abstract void GameLoaded();
+
+        public abstract void ApplySettings();
+
+        public abstract void SaveSettings(SRML.SR.SaveSystem.Data.CompoundDataPiece data);
+        public abstract void LoadSettings(SRML.SR.SaveSystem.Data.CompoundDataPiece data);
+
+        public virtual ITweakSettingsUI GetSettingsUI()
+        {
+            return null;
+        }
     }
+
+    public abstract class ITweak<ClassType> : ITweakBase where ClassType : class, new()
+    {
+        private static ClassType _instance;
+        public static ClassType Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new ClassType();
+                }
+                return _instance;
+            }
+        }
+    }
+
+    public abstract class ITweakSettingsUI
+    {
+        public abstract void OnGUI();
+
+        public abstract void Load();
+        public abstract void Save();
+    }
+
 
     public class Main : ModEntryPoint
     {
-        private ITweak[] tweaks;
+        public static ITweakBase[] tweaks;
 
-        public static uint DroneLimit = 2; // Default 2;
-        public static uint DroneSpeedMultiplier = 100; // Default 100;
-        public static uint DroneInventoryMax = 50; // Default 50
-
-        static T GetSaveValue<T>(SRML.SR.SaveSystem.Data.CompoundDataPiece data, string name, T defaultValue)
+        public static T GetSaveValue<T>(SRML.SR.SaveSystem.Data.CompoundDataPiece data, string name, T defaultValue)
         {
             if (data.HasPiece(name))
             {
@@ -39,76 +70,55 @@ namespace SRTweaks
         {
             HarmonyPatcher.GetInstance().PatchAll(Assembly.GetExecutingAssembly());
 
-            Console.RegisterCommand(new SetDroneLimitCommand());
-
             SRCallbacks.OnSaveGameLoaded += context => SRSingleton<SceneContext>.Instance.Player.AddComponent<SRTweaksConfigUI>();
 
-            tweaks = new ITweak[] { new DroneTweaks() };
+            tweaks = new ITweakBase[] { DroneTweaks.Instance };
 
-            foreach (ITweak tweak in tweaks)
+            foreach (ITweakBase tweak in tweaks)
             {
                 tweak.PreLoad();
             }
 
             SRCallbacks.OnSaveGameLoaded += (scenecontext) =>
             {
-                foreach (ITweak tweak in tweaks)
+                foreach (ITweakBase tweak in tweaks)
                 {
                     tweak.GameLoaded();
                 }
+
+                ApplySettings();
             };
 
             SaveRegistry.RegisterWorldDataPreLoadDelegate((WorldDataPreLoadDelegate) (data =>
             {
                 Log("Load");
-                DroneLimit = GetSaveValue<uint>(data, "DroneLimit", 2);
-                DroneSpeedMultiplier = GetSaveValue<uint>(data, "DroneSpeedMultiplier", 100);
-                DroneInventoryMax = GetSaveValue<uint>(data, "DroneInventoryMax", 50);
-
-                Log("DroneLimit: " + DroneLimit);
+                foreach (ITweakBase tweak in tweaks)
+                {
+                    tweak.LoadSettings(data);
+                }
             }));
 
             SaveRegistry.RegisterWorldDataSaveDelegate((WorldDataSaveDelegate)(data =>
             {
                 Log("Save");
-                data.SetValue("DroneLimit", DroneLimit);
-                data.SetValue("DroneSpeedMultiplier", DroneSpeedMultiplier);
-                data.SetValue("DroneInventoryMax", DroneInventoryMax);
+                foreach (ITweakBase tweak in tweaks)
+                {
+                    tweak.SaveSettings(data);
+                }
             }));
+        }
+
+        public static void ApplySettings()
+        {
+            foreach (ITweakBase tweak in tweaks)
+            {
+                tweak.ApplySettings();
+            }
         }
 
         public static void Log(string logString)
         {
             Debug.Log("SRTweaks> " + logString);
-        }
-    }
-
-    public class SetDroneLimitCommand : ConsoleCommand
-    {
-        public override string Usage => "dronelimit [count]";
-        public override string ID => "dronelimit";
-        public override string Description => "gets or sets the number of drones per ranch expansion";
-
-        public override bool Execute(string[] args)
-        {
-            if (args == null || args.Length < 1)
-            {
-                Main.Log("Drone limit: " + Main.DroneLimit + " (default: 2)");
-                return true;
-            }
-
-            if (!int.TryParse(args[0], out int newLimit))
-            {
-                return false;
-            }
-
-            if (newLimit < 0)
-            {
-                return true;
-            }
-
-            Main.DroneLimit = (uint)newLimit;
-            return true;
         }
     }
 }
