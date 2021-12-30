@@ -72,7 +72,7 @@ namespace SRTweaks
 
             SRCallbacks.OnSaveGameLoaded += context => SRSingleton<SceneContext>.Instance.Player.AddComponent<SRTweaksConfigUI>();
 
-            tweaks = new ITweakBase[] { DroneTweaks.Instance };
+            tweaks = new ITweakBase[] { DroneTweaks.Instance, GameModeTweaks.Instance };
 
             foreach (ITweakBase tweak in tweaks)
             {
