@@ -5,6 +5,7 @@ namespace SRTweaks
     public class SRTweaksConfigUI : MonoBehaviour
     {
         private Rect windowRect = new Rect(20, 20, 350, 250);
+        private Vector2 scrollPosition = new Vector2();
         private bool windowVisible = false;
         private SRInput.InputMode previousInput;
 
@@ -96,6 +97,8 @@ namespace SRTweaks
 
             GUILayout.Space(10);
 
+            scrollPosition = GUILayout.BeginScrollView(scrollPosition);
+
             foreach (ITweakBase tweak in Main.tweaks)
             {
                 ITweakSettingsUI ui = tweak.GetSettingsUI();
@@ -105,6 +108,8 @@ namespace SRTweaks
                     GUILayout.Space(2);
                 }
             }
+
+            GUILayout.EndScrollView();
 
             GUILayout.EndVertical();
             
