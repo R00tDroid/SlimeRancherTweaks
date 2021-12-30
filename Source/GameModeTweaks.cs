@@ -22,7 +22,7 @@ namespace SRTweaks
         public override void ApplySettings()
         {
             // Set Gamemode spawning
-            SRSingleton<SceneContext>.Instance.GameModeConfig.GetModeSettings().preventHostiles = AllowTarrSpawns;
+            SRSingleton<SceneContext>.Instance.GameModeConfig.GetModeSettings().preventHostiles = !AllowTarrSpawns;
             SRSingleton<SceneContext>.Instance.GameModeConfig.GetModeSettings().assumeExperiencedUser = SuppressTutorials;
         }
 
