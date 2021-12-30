@@ -1,4 +1,4 @@
-# SlimeRancherDroneSettings
+# Slime Rancher Tweaks
 
 This mod allows uers to tweak various slime rancher aspects.
 
