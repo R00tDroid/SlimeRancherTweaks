@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Reflection;
 using SRML;
-using HarmonyLib;
 using SRML.SR;
 using SRML.Console;
 using Console = SRML.Console.Console;
@@ -50,7 +47,7 @@ namespace SRTweaks
 
         public static void Log(string logString)
         {
-            Debug.Log(logString);
+            Debug.Log("SRTweaks> " + logString);
         }
     }
 

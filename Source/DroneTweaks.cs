@@ -1,11 +1,7 @@
 ﻿using System;
-using UnityEngine;
 using System.Reflection;
 using SRML;
 using HarmonyLib;
-using SRML.SR;
-using SRML.Console;
-using Console = SRML.Console.Console;
 
 namespace SRTweaks
 {
@@ -16,7 +12,7 @@ namespace SRTweaks
             MethodInfo methodOriginal = typeof(DroneAmmo).GetMethod("GetSlotMaxCount", new Type[] { });
             MethodInfo methodNew = typeof(DroneTweaks).GetMethod("GetDroneInventoryLimit", BindingFlags.Static | BindingFlags.Public);
 
-            Debug.Log("Patching drone.ammo.GetSlotMaxCount: " + methodOriginal + " > " + methodNew);
+            Main.Log("Patching drone.ammo.GetSlotMaxCount: " + methodOriginal + " > " + methodNew);
 
             Harmony harmony = HarmonyPatcher.GetInstance();
             harmony.Patch(methodOriginal, new HarmonyMethod(methodNew));
