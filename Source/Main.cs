@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
 using SRML;
@@ -9,11 +10,19 @@ using Console = SRML.Console.Console;
 
 namespace SRDrones
 {
+    public abstract class ITweak
+    {
+        public abstract void PreLoad();
+        public abstract void GameLoaded();
+    }
+
     public class Main : ModEntryPoint
     {
+        private ITweak[] tweaks;
+
         public static uint DroneLimit = 2; // Default 2;
         public static uint DroneSpeedMultiplier = 100; // Default 100;
-        public static uint DroneInventoryMax = 100; // Default 50
+        public static uint DroneInventoryMax = 50; // Default 50
 
         public override void PreLoad()
         {
@@ -23,46 +32,20 @@ namespace SRDrones
 
             SRCallbacks.OnSaveGameLoaded += context => SRSingleton<SceneContext>.Instance.Player.AddComponent<SRDronesConfigUI>();
 
+            tweaks = new ITweak[] { new DroneTweaks() };
+
+            foreach (ITweak tweak in tweaks)
+            {
+                tweak.PreLoad();
+            }
+
             SRCallbacks.OnSaveGameLoaded += (scenecontext) =>
             {
-                Debug.Log("Injecting new drone parameters");
-
-                // Set drone limit per ranch expansion
+                foreach (ITweak tweak in tweaks)
                 {
-                    LookupDirector lookupDirector = SRBehaviour.FindObjectOfType<LookupDirector>();
-                    GadgetDefinition droneGadget = lookupDirector.GetGadgetDefinition(Gadget.Id.DRONE);
-                    droneGadget.countLimit = (int) DroneLimit;
-
-                    droneGadget = lookupDirector.GetGadgetDefinition(Gadget.Id.DRONE_ADVANCED);
-                    droneGadget.countLimit = (int) DroneLimit;
-                }
-
-                // Set drone inventory limit
-                {
-                    MethodInfo methodOriginal = typeof(DroneAmmo).GetMethod("GetSlotMaxCount", new Type[] { });
-                    MethodInfo methodNew =
-                        typeof(Main).GetMethod("GetDroneInventoryLimit", BindingFlags.Static | BindingFlags.Public);
-
-                    Debug.Log("Patching drone.ammo.GetSlotMaxCount: " + methodOriginal + " > " + methodNew);
-
-                    Harmony harmony = HarmonyPatcher.GetInstance();
-                    harmony.Patch(methodOriginal, new HarmonyMethod(methodNew));
-                }
-
-                // Set drone movement speed
-                Drone[] drones = SRBehaviour.FindObjectsOfType<Drone>();
-                foreach (Drone drone in drones)
-                {
-                    drone.movement.movementSpeed = 180 * (DroneSpeedMultiplier / 100.0f);
+                    tweak.GameLoaded();
                 }
             };
-        }
-
-        // Function to override drone inventory limit
-        public static bool GetDroneInventoryLimit(ref int __result)
-        {
-            __result = (int) DroneInventoryMax;
-            return false;
         }
 
         public static void Log(string logString)
