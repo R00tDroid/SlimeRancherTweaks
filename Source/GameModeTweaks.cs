@@ -48,6 +48,7 @@ namespace SRTweaks
     public class GameModeTweaksSettingsUI : ITweakSettingsUI
     {
         private bool allowTarrSpawns;
+        private bool suppressTutorials;
 
         public override void OnGUI()
         {
@@ -55,16 +56,19 @@ namespace SRTweaks
             GUILayout.Space(2);
 
             allowTarrSpawns = GUILayout.Toggle(allowTarrSpawns, "Allow Tarr to spawn (default: true)");
+            suppressTutorials = GUILayout.Toggle(suppressTutorials, "Suppress tutorials (default: false)");
         }
 
         public override void Load()
         {
             allowTarrSpawns = GameModeTweaks.AllowTarrSpawns;
+            suppressTutorials = GameModeTweaks.SuppressTutorials;
         }
 
         public override void Save()
         {
             GameModeTweaks.AllowTarrSpawns = allowTarrSpawns;
+            GameModeTweaks.SuppressTutorials = suppressTutorials;
         }
     }
 
