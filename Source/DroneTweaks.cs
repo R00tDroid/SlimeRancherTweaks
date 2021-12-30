@@ -50,6 +50,7 @@ namespace SRTweaks
             foreach (Drone drone in drones)
             {
                 drone.movement.movementSpeed = 180 * (DroneSpeedMultiplier / 100.0f);
+                drone.movement.rotationFacingSpeed = 1.0f * (DroneSpeedMultiplier / 100.0f);
             }
         }
 
