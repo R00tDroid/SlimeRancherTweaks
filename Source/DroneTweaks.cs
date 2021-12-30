@@ -85,12 +85,15 @@ namespace SRTweaks
     public class DroneTweaksSettingsUI : ITweakSettingsUI
     {
         private string droneLimit;
+        private string droneSpeedMultiplier;
+        private string droneInventoryMax;
 
         public override void OnGUI()
         {
             GUILayout.Label("Drone");
             GUILayout.Space(2);
-            GUILayout.Label("Maximum number of drones per ranch expansion");
+
+            GUILayout.Label("Maximum number of drones per ranch expansion (default: 2)");
             string newValue = GUILayout.TextField(droneLimit, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
             if (newValue != droneLimit)
             {
@@ -99,11 +102,33 @@ namespace SRTweaks
                     droneLimit = newValue;
                 }
             }
+
+            GUILayout.Label("Movement speed (default: 100)");
+            newValue = GUILayout.TextField(droneSpeedMultiplier, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
+            if (newValue != droneSpeedMultiplier)
+            {
+                if (uint.TryParse(newValue, out uint dummy))
+                {
+                    droneSpeedMultiplier = newValue;
+                }
+            }
+
+            GUILayout.Label("Inventory size (default: 50)");
+            newValue = GUILayout.TextField(droneInventoryMax, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
+            if (newValue != droneInventoryMax)
+            {
+                if (uint.TryParse(newValue, out uint dummy))
+                {
+                    droneInventoryMax = newValue;
+                }
+            }
         }
 
         public override void Load()
         {
             droneLimit = DroneTweaks.DroneLimit.ToString();
+            droneSpeedMultiplier = DroneTweaks.DroneSpeedMultiplier.ToString();
+            droneInventoryMax = DroneTweaks.DroneInventoryMax.ToString();
         }
 
         public override void Save()
@@ -111,6 +136,16 @@ namespace SRTweaks
             if (uint.TryParse(droneLimit, out uint newValue))
             {
                 DroneTweaks.DroneLimit = newValue;
+            }
+
+            if (uint.TryParse(droneSpeedMultiplier, out newValue))
+            {
+                DroneTweaks.DroneSpeedMultiplier = newValue;
+            }
+
+            if (uint.TryParse(droneInventoryMax, out newValue))
+            {
+                DroneTweaks.DroneInventoryMax = newValue;
             }
         }
     }
