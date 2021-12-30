@@ -3,6 +3,8 @@ using System.Reflection;
 using SRML;
 using SRML.SR;
 using SRML.Console;
+using SRML.SR.SaveSystem;
+using SRML.SR.SaveSystem.Registry;
 using Console = SRML.Console.Console;
 
 namespace SRTweaks
@@ -20,6 +22,18 @@ namespace SRTweaks
         public static uint DroneLimit = 2; // Default 2;
         public static uint DroneSpeedMultiplier = 100; // Default 100;
         public static uint DroneInventoryMax = 50; // Default 50
+
+        static T GetSaveValue<T>(SRML.SR.SaveSystem.Data.CompoundDataPiece data, string name, T defaultValue)
+        {
+            if (data.HasPiece(name))
+            {
+                return data.GetValue<T>(name);
+            }
+            else
+            {
+                return defaultValue;
+            }
+        }
 
         public override void PreLoad()
         {
@@ -43,6 +57,24 @@ namespace SRTweaks
                     tweak.GameLoaded();
                 }
             };
+
+            SaveRegistry.RegisterWorldDataPreLoadDelegate((WorldDataPreLoadDelegate) (data =>
+            {
+                Log("Load");
+                DroneLimit = GetSaveValue<uint>(data, "DroneLimit", 2);
+                DroneSpeedMultiplier = GetSaveValue<uint>(data, "DroneSpeedMultiplier", 100);
+                DroneInventoryMax = GetSaveValue<uint>(data, "DroneInventoryMax", 50);
+
+                Log("DroneLimit: " + DroneLimit);
+            }));
+
+            SaveRegistry.RegisterWorldDataSaveDelegate((WorldDataSaveDelegate)(data =>
+            {
+                Log("Save");
+                data.SetValue("DroneLimit", DroneLimit);
+                data.SetValue("DroneSpeedMultiplier", DroneSpeedMultiplier);
+                data.SetValue("DroneInventoryMax", DroneInventoryMax);
+            }));
         }
 
         public static void Log(string logString)
