@@ -65,7 +65,7 @@ namespace SRTweaks
 
     public class SetTarrSpawnCommand : ConsoleCommand
     {
-        public override string Usage => "allowtarr [1|0]";
+        public override string Usage => "allowtarr [True/False]";
         public override string ID => "allowtarr";
         public override string Description => "gets or sets allowance of Tarr spawning";
 
@@ -73,7 +73,7 @@ namespace SRTweaks
         {
             if (args == null || args.Length < 1)
             {
-                Main.Log("Can Tarrs spawn: " + GameModeTweaks.AllowTarrSpawns + " (default: 1)");
+                Main.Log("Can Tarrs spawn: " + GameModeTweaks.AllowTarrSpawns + " (default: True)");
                 return true;
             }
 
