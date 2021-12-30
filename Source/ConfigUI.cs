@@ -6,6 +6,7 @@ namespace SRDrones
     {
         private Rect windowRect = new Rect(20, 20, 350, 250);
         private bool windowVisible = false;
+        private SRInput.InputMode previousInput;
 
         private string droneLimit;
 
@@ -24,10 +25,14 @@ namespace SRDrones
 
         public void ShowWindow()
         {
-            if (!windowVisible)
+            bool isPaused = SRSingleton<SceneContext>.Instance.TimeDirector.HasPauser();
+
+            if (!windowVisible && !isPaused)
             {
                 windowVisible = true;
-                SRInput.Instance.SetInputMode(SRInput.InputMode.PAUSE, this.gameObject.GetInstanceID());
+                previousInput = SRInput.Instance.GetInputMode();
+                SRInput.Instance.SetInputMode(SRInput.InputMode.NONE);
+                SRSingleton<SceneContext>.Instance.TimeDirector.Pause();
             }
         }
 
@@ -36,7 +41,8 @@ namespace SRDrones
             if (windowVisible)
             {
                 windowVisible = false;
-                SRInput.Instance.ClearInputMode(this.gameObject.GetInstanceID());
+                SRInput.Instance.SetInputMode(previousInput);
+                SRSingleton<SceneContext>.Instance.TimeDirector.Unpause();
             }
         }
 
