@@ -25,6 +25,8 @@ namespace SRTweaks
             harmony.Patch(methodOriginal, new HarmonyMethod(methodNew));
 
             SRML.Console.Console.RegisterCommand(new SetDroneLimitCommand());
+            SRML.Console.Console.RegisterCommand(new SetDroneSpeedCommand());
+            SRML.Console.Console.RegisterCommand(new SetDroneInventoryCommand());
         }
 
         public override void GameLoaded()
@@ -137,6 +139,66 @@ namespace SRTweaks
             }
 
             DroneTweaks.DroneLimit = (uint)newLimit;
+            Main.ApplySettings();
+            return true;
+        }
+    }
+
+    public class SetDroneSpeedCommand : ConsoleCommand
+    {
+        public override string Usage => "dronespeed [percentage]";
+        public override string ID => "dronespeed";
+        public override string Description => "gets or sets the drone speed multiplier (percentage)";
+
+        public override bool Execute(string[] args)
+        {
+            if (args == null || args.Length < 1)
+            {
+                Main.Log("Drone speed: " + DroneTweaks.DroneSpeedMultiplier + " (default: 100)");
+                return true;
+            }
+
+            if (!int.TryParse(args[0], out int newValue))
+            {
+                return false;
+            }
+
+            if (newValue < 0)
+            {
+                return false;
+            }
+
+            DroneTweaks.DroneSpeedMultiplier = (uint)newValue;
+            Main.ApplySettings();
+            return true;
+        }
+    }
+
+    public class SetDroneInventoryCommand : ConsoleCommand
+    {
+        public override string Usage => "droneinventory [count]";
+        public override string ID => "droneinventory";
+        public override string Description => "gets or sets the number of items a drone can hold";
+
+        public override bool Execute(string[] args)
+        {
+            if (args == null || args.Length < 1)
+            {
+                Main.Log("Drone inventory size: " + DroneTweaks.DroneInventoryMax + " (default: 50)");
+                return true;
+            }
+
+            if (!int.TryParse(args[0], out int newValue))
+            {
+                return false;
+            }
+
+            if (newValue < 1)
+            {
+                return false;
+            }
+
+            DroneTweaks.DroneInventoryMax = (uint)newValue;
             Main.ApplySettings();
             return true;
         }
