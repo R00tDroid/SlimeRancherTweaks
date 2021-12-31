@@ -4,7 +4,7 @@ namespace SRTweaks
 {
     public class SRTweaksConfigUI : MonoBehaviour
     {
-        private Rect windowRect = new Rect(20, 20, 350, 250);
+        private Rect windowRect = new Rect(50, 50, 500, 650);
         private Vector2 scrollPosition = new Vector2();
         private bool windowVisible = false;
         private SRInput.InputMode previousInput;
