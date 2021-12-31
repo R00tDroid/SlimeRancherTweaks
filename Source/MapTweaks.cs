@@ -29,7 +29,6 @@ namespace SRTweaks
 
         public override void ApplySettings()
         {
-    
         }
 
         public override void SaveSettings(CompoundDataPiece data)
