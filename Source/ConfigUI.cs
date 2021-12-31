@@ -84,7 +84,7 @@ namespace SRTweaks
         {
             if (windowVisible)
             {
-                windowRect = GUI.Window(0, windowRect, WindowLayout, "Slime Rancher Drone Tweaks");
+                windowRect = GUI.Window(0, windowRect, WindowLayout, "Slime Rancher Game Tweaks");
             }
         }
 
