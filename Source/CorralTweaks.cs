@@ -40,9 +40,11 @@ namespace SRTweaks
             foreach (PlortCollector plortCollector in plortCollectors)
             {
                 plortCollector.collectPeriod = CollectorDelayHours;
-                if (plortCollector.model.collectorNextTime < 3600.0 * (double)plortCollector.collectPeriod)
+
+                if (plortCollector.model.collectorNextTime - plortCollector.timeDir.worldModel.worldTime > 3600.0 * (double)plortCollector.collectPeriod)
                 {
-                    plortCollector.DoCollection();
+                    Main.Log("Reset plort collector schedule");
+                    plortCollector.model.collectorNextTime = plortCollector.timeDir.worldModel.worldTime;
                 }
             }
         }
