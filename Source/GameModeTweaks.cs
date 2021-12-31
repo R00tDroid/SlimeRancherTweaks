@@ -62,11 +62,13 @@ namespace SRTweaks
         private bool instantUpgrades;
         private bool receiveMails;
 
+        public override string GetTabName()
+        {
+            return "Game Mode";
+        }
+
         public override void OnGUI()
         {
-            GUILayout.Label("GameMode");
-            GUILayout.Space(2);
-
             allowTarrSpawns = GUILayout.Toggle(allowTarrSpawns, "Allow Tarr to spawn (default: true)");
             suppressTutorials = GUILayout.Toggle(suppressTutorials, "Suppress tutorials (default: false)");
             instantUpgrades = GUILayout.Toggle(instantUpgrades, "Upgrades instantly available (default: false)");

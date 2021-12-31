@@ -4,7 +4,7 @@ namespace SRTweaks
 {
     public class SRTweaksConfigUI : MonoBehaviour
     {
-        private Rect windowRect = new Rect(20, 20, 350, 250);
+        private Rect windowRect = new Rect(50, 50, 500, 650);
         private Vector2 scrollPosition = new Vector2();
         private bool windowVisible = false;
         private SRInput.InputMode previousInput;
@@ -12,6 +12,11 @@ namespace SRTweaks
         void Awake()
         {
             LoadConfig();
+
+            if (Main.tweaks.Length > 0)
+            {
+                currentTab = Main.tweaks[0];
+            }
         }
 
         public void Update()
@@ -83,6 +88,8 @@ namespace SRTweaks
             }
         }
 
+        private ITweakBase currentTab = null;
+
         void WindowLayout(int windowId)
         {
             GUILayout.BeginVertical();
@@ -97,13 +104,33 @@ namespace SRTweaks
                 SaveConfig();
             }
 
-            GUILayout.Space(10);
+            GUILayout.Space(5);
 
-            scrollPosition = GUILayout.BeginScrollView(scrollPosition);
+            GUILayoutOption[] tabButtonStyle = new GUILayoutOption[] { GUILayout.Width(100) };
 
+            GUILayout.BeginHorizontal();
             foreach (ITweakBase tweak in Main.tweaks)
             {
                 ITweakSettingsUI ui = tweak.GetSettingsUI();
+                if (ui != null)
+                {
+                    GUI.enabled = tweak != currentTab;
+                    if (GUILayout.Button(ui.GetTabName(), tabButtonStyle))
+                    {
+                        currentTab = tweak;
+                    }
+                }
+            }
+            GUI.enabled = true;
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(5);
+
+            scrollPosition = GUILayout.BeginScrollView(scrollPosition);
+
+            if (currentTab != null)
+            {
+                ITweakSettingsUI ui = currentTab.GetSettingsUI();
                 if (ui != null)
                 {
                     ui.OnGUI();

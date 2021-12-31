@@ -43,6 +43,8 @@ namespace SRTweaks
 
     public abstract class ITweakSettingsUI
     {
+        public abstract string GetTabName();
+
         public abstract void OnGUI();
 
         public abstract void Load();
