@@ -31,7 +31,7 @@ namespace SRTweaks
             SRSingleton<SceneContext>.Instance.GameModeConfig.GetModeSettings().assumeExperiencedUser = SuppressTutorials;
             SRSingleton<SceneContext>.Instance.GameModeConfig.GetModeSettings().immediateUpgrades = InstantUpgrades;
             SRSingleton<SceneContext>.Instance.GameModeConfig.GetModeSettings().suppressStory = !ReceiveMails;
-            SRSingleton<SceneContext>.Instance.GameModeConfig.GetModeSettings().playerDamageMultiplier = PlayerDamageMultiplier;
+            SRSingleton<SceneContext>.Instance.GameModeConfig.GetModeSettings().playerDamageMultiplier = PlayerDamageMultiplier / 100.0f;
         }
 
         public override void SaveSettings(CompoundDataPiece data)
