@@ -10,11 +10,13 @@ namespace SRTweaks
         public static uint AirNetDurabilityMultiplier = 100; // Default 100;
         public static float AirNetRecoverDelay = 0.1f; // Default 0.1;
         public static float AirNetRecoverDuration = 0.1f; // Default 0.1;
+        public static float CollectorDelayHours = 1.0f; // default 1.0
 
         public override void PreLoad()
         {
             SRML.Console.Console.RegisterCommand(new SetAirNetDurabilityCommand());
             SRML.Console.Console.RegisterCommand(new SetAirNetRecoveryCommand());
+            SRML.Console.Console.RegisterCommand(new SetCollectorDelayCommand());
         }
 
         public override void GameLoaded()
@@ -32,6 +34,17 @@ namespace SRTweaks
                 airnet.recoverStartTime = AirNetRecoverDelay;
                 airnet.hoursToRecover = AirNetRecoverDuration;
             }
+
+            // Set plort collector delay
+            PlortCollector[] plortCollectors = SRBehaviour.FindObjectsOfType<PlortCollector>();
+            foreach (PlortCollector plortCollector in plortCollectors)
+            {
+                plortCollector.collectPeriod = CollectorDelayHours;
+                if (plortCollector.model.collectorNextTime < 3600.0 * (double)plortCollector.collectPeriod)
+                {
+                    plortCollector.DoCollection();
+                }
+            }
         }
 
         public override void SaveSettings(CompoundDataPiece data)
@@ -39,6 +52,7 @@ namespace SRTweaks
             data.SetValue("AirNetDurabilityMultiplier", AirNetDurabilityMultiplier);
             data.SetValue("AirNetRecoverDelay", AirNetRecoverDelay);
             data.SetValue("AirNetRecoverDuration", AirNetRecoverDuration);
+            data.SetValue("CollectorDelayHours", CollectorDelayHours);
         }
 
         public override void LoadSettings(CompoundDataPiece data)
@@ -46,6 +60,7 @@ namespace SRTweaks
             AirNetDurabilityMultiplier = Main.GetSaveValue<uint>(data, "AirNetDurabilityMultiplier", 100);
             AirNetRecoverDelay = Main.GetSaveValue<float>(data, "AirNetRecoverDelay", 0.1f);
             AirNetRecoverDuration = Main.GetSaveValue<float>(data, "AirNetRecoverDuration", 0.1f);
+            CollectorDelayHours = Main.GetSaveValue<float>(data, "CollectorDelayHours", 1.0f);
         }
 
         private ITweakSettingsUI SettingsUI = new CorralTweaksSettingsUI();
@@ -60,6 +75,7 @@ namespace SRTweaks
         private string airNetDurabilityMultiplier;
         private string airNetRecoverDelay;
         private string airNetRecoverDuration;
+        private string collectorDelayHours;
 
         public override string GetTabName()
         {
@@ -97,6 +113,16 @@ namespace SRTweaks
                     airNetRecoverDuration = newValue;
                 }
             }
+
+            GUILayout.Label("Plot collector delay in game hours (default: 1.0)");
+            newValue = GUILayout.TextField(collectorDelayHours, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
+            if (newValue != collectorDelayHours)
+            {
+                if (float.TryParse(newValue, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out float dummy))
+                {
+                    collectorDelayHours = newValue;
+                }
+            }
         }
 
         public override void Load()
@@ -104,6 +130,7 @@ namespace SRTweaks
             airNetDurabilityMultiplier = CorralTweaks.AirNetDurabilityMultiplier.ToString();
             airNetRecoverDelay = CorralTweaks.AirNetRecoverDelay.ToString(CultureInfo.InvariantCulture);
             airNetRecoverDuration = CorralTweaks.AirNetRecoverDuration.ToString(CultureInfo.InvariantCulture);
+            collectorDelayHours = CorralTweaks.CollectorDelayHours.ToString(CultureInfo.InvariantCulture);
         }
 
         public override void Save()
@@ -121,6 +148,11 @@ namespace SRTweaks
             if (float.TryParse(airNetRecoverDuration, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out newFloatValue))
             {
                 CorralTweaks.AirNetRecoverDuration = newFloatValue;
+            }
+
+            if (float.TryParse(collectorDelayHours, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out newFloatValue))
+            {
+                CorralTweaks.CollectorDelayHours = newFloatValue;
             }
         } 
     }
@@ -191,6 +223,36 @@ namespace SRTweaks
 
             CorralTweaks.AirNetRecoverDelay = newValue1;
             CorralTweaks.AirNetRecoverDuration = newValue2;
+            Main.ApplySettings();
+            return true;
+        }
+    }
+
+    public class SetCollectorDelayCommand : ConsoleCommand
+    {
+        public override string Usage => "collectordelay [game hours]";
+        public override string ID => "collectordelay";
+        public override string Description => "gets or sets the plort collector delay in game hours";
+
+        public override bool Execute(string[] args)
+        {
+            if (args == null || args.Length < 1)
+            {
+                Main.Log("Plot collector delay: " + CorralTweaks.CollectorDelayHours + " (default: 1)");
+                return true;
+            }
+
+            if (!float.TryParse(args[0], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out float newValue))
+            {
+                return false;
+            }
+
+            if (newValue < 0)
+            {
+                return false;
+            }
+
+            CorralTweaks.CollectorDelayHours = newValue;
             Main.ApplySettings();
             return true;
         }
