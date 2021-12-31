@@ -88,11 +88,13 @@ namespace SRTweaks
         private string droneSpeedMultiplier;
         private string droneInventoryMax;
 
+        public override string GetTabName()
+        {
+            return "Drones";
+        }
+
         public override void OnGUI()
         {
-            GUILayout.Label("Drone");
-            GUILayout.Space(2);
-
             GUILayout.Label("Maximum number of drones per ranch expansion (default: 2)");
             string newValue = GUILayout.TextField(droneLimit, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
             if (newValue != droneLimit)
