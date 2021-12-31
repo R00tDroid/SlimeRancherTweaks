@@ -10,6 +10,7 @@ namespace SRTweaks
         public static bool SuppressTutorials = false; // Default false;
         public static bool InstantUpgrades = false; // Default false;
         public static bool ReceiveMails = true; // Default true;
+        public static uint PlayerDamageMultiplier = 100; // Default 100;
 
         public override void PreLoad()
         {
@@ -30,6 +31,7 @@ namespace SRTweaks
             SRSingleton<SceneContext>.Instance.GameModeConfig.GetModeSettings().assumeExperiencedUser = SuppressTutorials;
             SRSingleton<SceneContext>.Instance.GameModeConfig.GetModeSettings().immediateUpgrades = InstantUpgrades;
             SRSingleton<SceneContext>.Instance.GameModeConfig.GetModeSettings().suppressStory = !ReceiveMails;
+            SRSingleton<SceneContext>.Instance.GameModeConfig.GetModeSettings().playerDamageMultiplier = PlayerDamageMultiplier / 100.0f;
         }
 
         public override void SaveSettings(CompoundDataPiece data)
@@ -38,6 +40,7 @@ namespace SRTweaks
             data.SetValue("SuppressTutorials", SuppressTutorials);
             data.SetValue("InstantUpgrades", InstantUpgrades);
             data.SetValue("ReceiveMails", ReceiveMails);
+            data.SetValue("PlayerDamageMultiplier", PlayerDamageMultiplier);
         }
 
         public override void LoadSettings(CompoundDataPiece data)
@@ -46,6 +49,7 @@ namespace SRTweaks
             SuppressTutorials = Main.GetSaveValue<bool>(data, "SuppressTutorials", false);
             InstantUpgrades = Main.GetSaveValue<bool>(data, "InstantUpgrades", false);
             ReceiveMails = Main.GetSaveValue<bool>(data, "ReceiveMails", true);
+            PlayerDamageMultiplier = Main.GetSaveValue<uint>(data, "PlayerDamageMultiplier", 100);
         }
 
         private ITweakSettingsUI SettingsUI = new GameModeTweaksSettingsUI();
@@ -61,6 +65,7 @@ namespace SRTweaks
         private bool suppressTutorials;
         private bool instantUpgrades;
         private bool receiveMails;
+        private string playerDamageMultiplier;
 
         public override string GetTabName()
         {
@@ -73,6 +78,16 @@ namespace SRTweaks
             suppressTutorials = GUILayout.Toggle(suppressTutorials, "Suppress tutorials (default: false)");
             instantUpgrades = GUILayout.Toggle(instantUpgrades, "Upgrades instantly available (default: false)");
             receiveMails = GUILayout.Toggle(receiveMails, "Receive mails (default: true)");
+
+            GUILayout.Label("Player damage multiplier (default: 100)");
+            string newValue = GUILayout.TextField(playerDamageMultiplier, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
+            if (newValue != playerDamageMultiplier)
+            {
+                if (uint.TryParse(newValue, out uint dummy))
+                {
+                    playerDamageMultiplier = newValue;
+                }
+            }
         }
 
         public override void Load()
@@ -81,6 +96,7 @@ namespace SRTweaks
             suppressTutorials = GameModeTweaks.SuppressTutorials;
             instantUpgrades = GameModeTweaks.InstantUpgrades;
             receiveMails = GameModeTweaks.ReceiveMails;
+            playerDamageMultiplier = GameModeTweaks.PlayerDamageMultiplier.ToString();
         }
 
         public override void Save()
@@ -89,6 +105,11 @@ namespace SRTweaks
             GameModeTweaks.SuppressTutorials = suppressTutorials;
             GameModeTweaks.InstantUpgrades = instantUpgrades;
             GameModeTweaks.ReceiveMails = receiveMails;
+
+            if (uint.TryParse(playerDamageMultiplier, out uint newValue))
+            {
+                GameModeTweaks.PlayerDamageMultiplier = newValue;
+            }
         }
     }
 
@@ -187,6 +208,36 @@ namespace SRTweaks
             }
 
             GameModeTweaks.ReceiveMails = newValue;
+            Main.ApplySettings();
+            return true;
+        }
+    }
+
+    public class SetPlayerDamageMultiplierCommand : ConsoleCommand
+    {
+        public override string Usage => "playerdamage [percentage]";
+        public override string ID => "playerdamage";
+        public override string Description => "gets or sets the player damage multiplier (percentage)";
+
+        public override bool Execute(string[] args)
+        {
+            if (args == null || args.Length < 1)
+            {
+                Main.Log("Player damage: " + GameModeTweaks.PlayerDamageMultiplier + "% (default: 100)");
+                return true;
+            }
+
+            if (!int.TryParse(args[0], out int newValue))
+            {
+                return false;
+            }
+
+            if (newValue < 0)
+            {
+                return false;
+            }
+
+            GameModeTweaks.PlayerDamageMultiplier = (uint)newValue;
             Main.ApplySettings();
             return true;
         }
