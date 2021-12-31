@@ -55,3 +55,13 @@ target_compile_options(SRTweaks PUBLIC "/unsafe")
 add_custom_command(TARGET SRTweaks POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:SRTweaks> "${GameLocation}\\SRML\\Mods\\SRTweaks.dll"
 )
+
+add_custom_target(SlimeRancher)
+add_dependencies(SlimeRancher SRTweaks)
+set_property(TARGET SlimeRancher PROPERTY
+    VS_DEBUGGER_COMMAND "${GameLocation}\\SlimeRancher.exe"
+)
+set_property(TARGET SlimeRancher PROPERTY
+    VS_DEBUGGER_WORKING_DIRECTORY "${GameLocation}"
+)
+set_property(DIRECTORY ${CMAKE_CURRENT_LIST_DIR} PROPERTY VS_STARTUP_PROJECT SlimeRancher)
