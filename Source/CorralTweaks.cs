@@ -11,6 +11,7 @@ namespace SRTweaks
         public static float AirNetRecoverDelay = 0.1f; // Default 0.1;
         public static float AirNetRecoverDuration = 0.1f; // Default 0.1;
         public static float CollectorDelayHours = 1.0f; // default 1.0
+        public static ushort ItemsPerFeed = 6; // default 6;
 
         public override void PreLoad()
         {
@@ -47,6 +48,13 @@ namespace SRTweaks
                     plortCollector.model.collectorNextTime = plortCollector.timeDir.worldModel.worldTime;
                 }
             }
+
+            // Set amount of items a feeder will drop
+            SlimeFeeder[] slimeFeeders = SRBehaviour.FindObjectsOfType<SlimeFeeder>();
+            foreach (SlimeFeeder slimeFeeder in slimeFeeders)
+            {
+                slimeFeeder.itemsPerFeeding = ItemsPerFeed;
+            }
         }
 
         public override void SaveSettings(CompoundDataPiece data)
@@ -55,6 +63,7 @@ namespace SRTweaks
             data.SetValue("AirNetRecoverDelay", AirNetRecoverDelay);
             data.SetValue("AirNetRecoverDuration", AirNetRecoverDuration);
             data.SetValue("CollectorDelayHours", CollectorDelayHours);
+            data.SetValue("ItemsPerFeed", ItemsPerFeed);
         }
 
         public override void LoadSettings(CompoundDataPiece data)
@@ -63,6 +72,7 @@ namespace SRTweaks
             AirNetRecoverDelay = Main.GetSaveValue<float>(data, "AirNetRecoverDelay", 0.1f);
             AirNetRecoverDuration = Main.GetSaveValue<float>(data, "AirNetRecoverDuration", 0.1f);
             CollectorDelayHours = Main.GetSaveValue<float>(data, "CollectorDelayHours", 1.0f);
+            ItemsPerFeed = Main.GetSaveValue<ushort>(data, "ItemsPerFeed", 6);
         }
 
         private ITweakSettingsUI SettingsUI = new CorralTweaksSettingsUI();
@@ -78,6 +88,7 @@ namespace SRTweaks
         private string airNetRecoverDelay;
         private string airNetRecoverDuration;
         private string collectorDelayHours;
+        private string itemsPerFeed;
 
         public override string GetTabName()
         {
@@ -125,6 +136,16 @@ namespace SRTweaks
                     collectorDelayHours = newValue;
                 }
             }
+
+            GUILayout.Label("Feeder items to drop per cycle (default: 6)");
+            newValue = GUILayout.TextField(itemsPerFeed, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
+            if (newValue != itemsPerFeed)
+            {
+                if (ushort.TryParse(newValue, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out ushort dummy))
+                {
+                    itemsPerFeed = newValue;
+                }
+            }
         }
 
         public override void Load()
@@ -133,6 +154,7 @@ namespace SRTweaks
             airNetRecoverDelay = CorralTweaks.AirNetRecoverDelay.ToString(CultureInfo.InvariantCulture);
             airNetRecoverDuration = CorralTweaks.AirNetRecoverDuration.ToString(CultureInfo.InvariantCulture);
             collectorDelayHours = CorralTweaks.CollectorDelayHours.ToString(CultureInfo.InvariantCulture);
+            itemsPerFeed = CorralTweaks.ItemsPerFeed.ToString(CultureInfo.InvariantCulture);
         }
 
         public override void Save()
@@ -155,6 +177,11 @@ namespace SRTweaks
             if (float.TryParse(collectorDelayHours, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out newFloatValue))
             {
                 CorralTweaks.CollectorDelayHours = newFloatValue;
+            }
+
+            if (ushort.TryParse(itemsPerFeed, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out ushort newShortValue))
+            {
+                CorralTweaks.ItemsPerFeed = newShortValue;
             }
         } 
     }
