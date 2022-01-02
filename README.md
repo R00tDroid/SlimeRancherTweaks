@@ -1,6 +1,6 @@
 # Slime Rancher Tweaks
 
-This mod allows uers to tweak various things in Slime Rancher.
+This mod allows users to tweak various things in Slime Rancher.
 
 ## Dependencies
 * CMake 3.15+
