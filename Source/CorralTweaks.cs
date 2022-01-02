@@ -11,7 +11,7 @@ namespace SRTweaks
         public static float AirNetRecoverDelay = 0.1f; // Default 0.1;
         public static float AirNetRecoverDuration = 0.1f; // Default 0.1;
         public static float CollectorDelayHours = 1.0f; // default 1.0
-        public static ushort ItemsPerFeed = 6; // default 6;
+        public static uint ItemsPerFeed = 6; // default 6;
 
         public override void PreLoad()
         {
@@ -53,7 +53,7 @@ namespace SRTweaks
             SlimeFeeder[] slimeFeeders = SRBehaviour.FindObjectsOfType<SlimeFeeder>();
             foreach (SlimeFeeder slimeFeeder in slimeFeeders)
             {
-                slimeFeeder.itemsPerFeeding = ItemsPerFeed;
+                slimeFeeder.itemsPerFeeding = (int)ItemsPerFeed;
             }
         }
 
@@ -72,7 +72,7 @@ namespace SRTweaks
             AirNetRecoverDelay = Main.GetSaveValue<float>(data, "AirNetRecoverDelay", 0.1f);
             AirNetRecoverDuration = Main.GetSaveValue<float>(data, "AirNetRecoverDuration", 0.1f);
             CollectorDelayHours = Main.GetSaveValue<float>(data, "CollectorDelayHours", 1.0f);
-            ItemsPerFeed = Main.GetSaveValue<ushort>(data, "ItemsPerFeed", 6);
+            ItemsPerFeed = Main.GetSaveValue<uint>(data, "ItemsPerFeed", 6);
         }
 
         private ITweakSettingsUI SettingsUI = new CorralTweaksSettingsUI();
@@ -141,7 +141,7 @@ namespace SRTweaks
             newValue = GUILayout.TextField(itemsPerFeed, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
             if (newValue != itemsPerFeed)
             {
-                if (ushort.TryParse(newValue, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out ushort dummy))
+                if (uint.TryParse(newValue, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out uint dummy))
                 {
                     itemsPerFeed = newValue;
                 }
@@ -179,7 +179,7 @@ namespace SRTweaks
                 CorralTweaks.CollectorDelayHours = newFloatValue;
             }
 
-            if (ushort.TryParse(itemsPerFeed, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out ushort newShortValue))
+            if (uint.TryParse(itemsPerFeed, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out uint newShortValue))
             {
                 CorralTweaks.ItemsPerFeed = newShortValue;
             }
