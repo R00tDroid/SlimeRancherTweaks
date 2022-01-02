@@ -120,8 +120,8 @@ namespace SRTweaks
             showGordos = GUILayout.Toggle(showGordos, "Show Gordos");
             if (showGordos)
             {
-                hidePoppedGordos = GUILayout.Toggle(showGordosWithoutDiscovery, "Show unfed Gordos");
-                showGordosWithoutDiscovery = GUILayout.Toggle(hidePoppedGordos, "Hide popped Gordos");
+                showGordosWithoutDiscovery = GUILayout.Toggle(showGordosWithoutDiscovery, "Show unfed Gordos");
+                hidePoppedGordos = GUILayout.Toggle(hidePoppedGordos, "Hide popped Gordos");
             }
             hidePlayer = GUILayout.Toggle(hidePlayer, "Hide Player");
         }
