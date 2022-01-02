@@ -12,6 +12,7 @@ namespace SRTweaks
     {
         public static bool ShowGordos = false; // Default false;
         public static bool ShowGordosWithoutDiscovery = false; // Default false;
+        public static bool HidePoppedGordos = false; // Default false;
         public static bool HidePlayer = false; // Default false;
 
         public override void PreLoad()
@@ -41,6 +42,7 @@ namespace SRTweaks
         {
             data.SetValue("ShowGordos", ShowGordos);
             data.SetValue("ShowGordosWithoutDiscovery", ShowGordosWithoutDiscovery);
+            data.SetValue("HidePoppedGordos", HidePoppedGordos);
             data.SetValue("HidePlayer", HidePlayer);
         }
 
@@ -48,6 +50,7 @@ namespace SRTweaks
         {
             ShowGordos = Main.GetSaveValue<bool>(data, "ShowGordos", false);
             ShowGordosWithoutDiscovery = Main.GetSaveValue<bool>(data, "ShowGordosWithoutDiscovery", false);
+            HidePoppedGordos = Main.GetSaveValue<bool>(data, "HidePoppedGordos", false);
             HidePlayer = Main.GetSaveValue<bool>(data, "HidePlayer", false);
         }
 
@@ -65,11 +68,24 @@ namespace SRTweaks
             }
             else
             {
-                int eatenCount = __instance.gordoEat.GetEatenCount();
-                GordoNearBurstOnGameMode component = (GordoNearBurstOnGameMode)__instance.gameObject.GetComponent<GordoNearBurstOnGameMode>();
-                eatenCount -= component == null ? 0 : __instance.gordoEat.GetTargetCount() - (int)component.remaining;
-                __result = eatenCount > 0 || MapTweaks.ShowGordosWithoutDiscovery;
-                return false;
+                if (HidePoppedGordos && __instance.gordoEat.HasPopped())
+                {
+                    __result = false;
+                    return false;
+                }
+                else if (ShowGordosWithoutDiscovery)
+                {
+                    __result = true;
+                    return false;
+                }
+                else
+                {
+                    int eatenCount = __instance.gordoEat.GetEatenCount();
+                    GordoNearBurstOnGameMode component = (GordoNearBurstOnGameMode) __instance.gameObject.GetComponent<GordoNearBurstOnGameMode>();
+                    eatenCount -= component == null ? 0 : __instance.gordoEat.GetTargetCount() - (int) component.remaining;
+                    __result = eatenCount > 0;
+                    return false;
+                }
             }
         }
 
@@ -91,6 +107,7 @@ namespace SRTweaks
     {
         private bool showGordos; 
         private bool showGordosWithoutDiscovery;
+        private bool hidePoppedGordos;
         private bool hidePlayer;
 
         public override string GetTabName()
@@ -103,7 +120,8 @@ namespace SRTweaks
             showGordos = GUILayout.Toggle(showGordos, "Show Gordos");
             if (showGordos)
             {
-                showGordosWithoutDiscovery = GUILayout.Toggle(showGordosWithoutDiscovery, "Show unfed Gordos");
+                hidePoppedGordos = GUILayout.Toggle(showGordosWithoutDiscovery, "Show unfed Gordos");
+                showGordosWithoutDiscovery = GUILayout.Toggle(hidePoppedGordos, "Hide popped Gordos");
             }
             hidePlayer = GUILayout.Toggle(hidePlayer, "Hide Player");
         }
@@ -112,6 +130,7 @@ namespace SRTweaks
         {
             showGordos = MapTweaks.ShowGordos;
             showGordosWithoutDiscovery = MapTweaks.ShowGordosWithoutDiscovery;
+            hidePoppedGordos = MapTweaks.HidePoppedGordos;
             hidePlayer = MapTweaks.HidePlayer;
         }
 
@@ -119,6 +138,7 @@ namespace SRTweaks
         {
             MapTweaks.ShowGordos = showGordos;
             MapTweaks.ShowGordosWithoutDiscovery = showGordosWithoutDiscovery;
+            MapTweaks.HidePoppedGordos = hidePoppedGordos;
             MapTweaks.HidePlayer = hidePlayer;
         }
     }
