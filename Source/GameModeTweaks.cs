@@ -1,4 +1,8 @@
-﻿using SRML.Console;
+﻿using System.Reflection;
+using HarmonyLib;
+using MonomiPark.SlimeRancher.DataModel;
+using SRML;
+using SRML.Console;
 using SRML.SR.SaveSystem.Data;
 using UnityEngine;
 
@@ -14,6 +18,18 @@ namespace SRTweaks
 
         public override void PreLoad()
         {
+            Harmony harmony = HarmonyPatcher.GetInstance();
+
+            MethodInfo methodOriginal = typeof(PlayerModel).GetMethod("Reset");
+            MethodInfo methodNew = typeof(GameModeTweaks).GetMethod("PlayerModel_ResetPatch", BindingFlags.Static | BindingFlags.Public);
+            Main.Log("Patching PlayerModel.Reset: " + methodOriginal + " > " + methodNew);
+            harmony.Patch(methodOriginal, null, new HarmonyMethod(methodNew));
+
+            methodOriginal = typeof(PlayerModel).GetMethod("ApplyUpgrade");
+            methodNew = typeof(GameModeTweaks).GetMethod("PlayerModel_ApplyUpgradePatch", BindingFlags.Static | BindingFlags.Public);
+            Main.Log("Patching PlayerModel.ApplyUpgrade: " + methodOriginal + " > " + methodNew);
+            harmony.Patch(methodOriginal, new HarmonyMethod(methodNew));
+
             SRML.Console.Console.RegisterCommand(new SetTarrSpawnCommand());
             SRML.Console.Console.RegisterCommand(new SetSuppressTutorialsCommand());
             SRML.Console.Console.RegisterCommand(new SetInstantUpgradesCommand());
@@ -56,6 +72,54 @@ namespace SRTweaks
         public override ITweakSettingsUI GetSettingsUI()
         {
             return SettingsUI;
+        }
+
+        public static readonly int[] DEFAULT_MAX_AMMO = new int[5]
+        {
+            20,
+            30,
+            40,
+            50,
+            100
+        };
+
+        public static void PlayerModel_ResetPatch(PlayerModel __instance, GameModeSettings modeSettings)
+        {
+            Main.Log("Set ammo 0: " + DEFAULT_MAX_AMMO[0]);
+            __instance.maxAmmo = DEFAULT_MAX_AMMO[0];
+        }
+
+        public static bool PlayerModel_ApplyUpgradePatch(PlayerModel __instance, PlayerState.Upgrade upgrade, bool isFirstTime)
+        {
+            switch (upgrade)
+            {
+                case PlayerState.Upgrade.AMMO_1:
+                {
+                    Main.Log("Set ammo 1: " + DEFAULT_MAX_AMMO[1]);
+                    __instance.maxAmmo = DEFAULT_MAX_AMMO[1];
+                    return false;
+                }
+                case PlayerState.Upgrade.AMMO_2:
+                {
+                    Main.Log("Set ammo 2: " + DEFAULT_MAX_AMMO[2]);
+                    __instance.maxAmmo = DEFAULT_MAX_AMMO[2];
+                    return false;
+                }
+                case PlayerState.Upgrade.AMMO_3:
+                {
+                    Main.Log("Set ammo 3: " + DEFAULT_MAX_AMMO[3]);
+                    __instance.maxAmmo = DEFAULT_MAX_AMMO[3];
+                    return false;
+                }
+                case PlayerState.Upgrade.AMMO_4:
+                {
+                    Main.Log("Set ammo 5: " + DEFAULT_MAX_AMMO[4]);
+                    __instance.maxAmmo = DEFAULT_MAX_AMMO[4];
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 
@@ -146,8 +210,7 @@ namespace SRTweaks
 
         public override bool Execute(string[] args)
         {
-            if (args == null || args.Length < 1)
-            {
+            if (args == null || args.Length < 1) {
                 Main.Log("Are tutorials suppressed: " + GameModeTweaks.SuppressTutorials + " (default: False)");
                 return true;
             }
