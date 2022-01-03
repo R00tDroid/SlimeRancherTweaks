@@ -85,7 +85,6 @@ namespace SRTweaks
 
         public static void PlayerModel_ResetPatch(PlayerModel __instance, GameModeSettings modeSettings)
         {
-            Main.Log("Set ammo 0: " + DEFAULT_MAX_AMMO[0]);
             __instance.maxAmmo = DEFAULT_MAX_AMMO[0];
         }
 
@@ -95,25 +94,21 @@ namespace SRTweaks
             {
                 case PlayerState.Upgrade.AMMO_1:
                 {
-                    Main.Log("Set ammo 1: " + DEFAULT_MAX_AMMO[1]);
                     __instance.maxAmmo = DEFAULT_MAX_AMMO[1];
                     return false;
                 }
                 case PlayerState.Upgrade.AMMO_2:
                 {
-                    Main.Log("Set ammo 2: " + DEFAULT_MAX_AMMO[2]);
                     __instance.maxAmmo = DEFAULT_MAX_AMMO[2];
                     return false;
                 }
                 case PlayerState.Upgrade.AMMO_3:
                 {
-                    Main.Log("Set ammo 3: " + DEFAULT_MAX_AMMO[3]);
                     __instance.maxAmmo = DEFAULT_MAX_AMMO[3];
                     return false;
                 }
                 case PlayerState.Upgrade.AMMO_4:
                 {
-                    Main.Log("Set ammo 5: " + DEFAULT_MAX_AMMO[4]);
                     __instance.maxAmmo = DEFAULT_MAX_AMMO[4];
                     return false;
                 }
