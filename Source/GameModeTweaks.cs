@@ -15,6 +15,14 @@ namespace SRTweaks
         public static bool InstantUpgrades = false; // Default false;
         public static bool ReceiveMails = true; // Default true;
         public static uint PlayerDamageMultiplier = 100; // Default 100;
+        public static uint[] PlayerInventoryLevels = new uint[5]
+        {
+            20,
+            30,
+            40,
+            50,
+            100
+        }; // Default 20, 30, 40, 50, 100;
 
         public override void PreLoad()
         {
@@ -57,6 +65,11 @@ namespace SRTweaks
             data.SetValue("InstantUpgrades", InstantUpgrades);
             data.SetValue("ReceiveMails", ReceiveMails);
             data.SetValue("PlayerDamageMultiplier", PlayerDamageMultiplier);
+
+            for (int i = 0; i < PlayerInventoryLevels.Length ; i++)
+            {
+                data.SetValue("PlayerInventoryLevels" + i, PlayerInventoryLevels[i]);
+            }
         }
 
         public override void LoadSettings(CompoundDataPiece data)
@@ -66,6 +79,11 @@ namespace SRTweaks
             InstantUpgrades = Main.GetSaveValue<bool>(data, "InstantUpgrades", false);
             ReceiveMails = Main.GetSaveValue<bool>(data, "ReceiveMails", true);
             PlayerDamageMultiplier = Main.GetSaveValue<uint>(data, "PlayerDamageMultiplier", 100);
+
+            for (int i = 0; i < PlayerInventoryLevels.Length; i++)
+            {
+                PlayerInventoryLevels[i] = Main.GetSaveValue<uint>(data, "PlayerInventoryLevels" + i, (uint)PlayerModel.DEFAULT_MAX_AMMO[i]);
+            }
         }
 
         private ITweakSettingsUI SettingsUI = new GameModeTweaksSettingsUI();
@@ -74,18 +92,9 @@ namespace SRTweaks
             return SettingsUI;
         }
 
-        public static readonly int[] DEFAULT_MAX_AMMO = new int[5]
-        {
-            20,
-            30,
-            40,
-            50,
-            100
-        };
-
         public static void PlayerModel_ResetPatch(PlayerModel __instance, GameModeSettings modeSettings)
         {
-            __instance.maxAmmo = DEFAULT_MAX_AMMO[0];
+            __instance.maxAmmo = (int)PlayerInventoryLevels[0];
         }
 
         public static bool PlayerModel_ApplyUpgradePatch(PlayerModel __instance, PlayerState.Upgrade upgrade, bool isFirstTime)
@@ -94,22 +103,22 @@ namespace SRTweaks
             {
                 case PlayerState.Upgrade.AMMO_1:
                 {
-                    __instance.maxAmmo = DEFAULT_MAX_AMMO[1];
+                    __instance.maxAmmo = (int)PlayerInventoryLevels[1];
                     return false;
                 }
                 case PlayerState.Upgrade.AMMO_2:
                 {
-                    __instance.maxAmmo = DEFAULT_MAX_AMMO[2];
+                    __instance.maxAmmo = (int)PlayerInventoryLevels[2];
                     return false;
                 }
                 case PlayerState.Upgrade.AMMO_3:
                 {
-                    __instance.maxAmmo = DEFAULT_MAX_AMMO[3];
+                    __instance.maxAmmo = (int)PlayerInventoryLevels[3];
                     return false;
                 }
                 case PlayerState.Upgrade.AMMO_4:
                 {
-                    __instance.maxAmmo = DEFAULT_MAX_AMMO[4];
+                    __instance.maxAmmo = (int)PlayerInventoryLevels[4];
                     return false;
                 }
             }
