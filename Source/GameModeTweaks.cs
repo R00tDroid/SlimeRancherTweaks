@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using HarmonyLib;
 using MonomiPark.SlimeRancher.DataModel;
 using SRML;
@@ -95,6 +96,8 @@ namespace SRTweaks
         public static void PlayerModel_ResetPatch(PlayerModel __instance, GameModeSettings modeSettings)
         {
             __instance.maxAmmo = (int)PlayerInventoryLevels[0];
+            __instance.maxEnergy = 100;
+            __instance.maxHealth = 100;
         }
 
         public static bool PlayerModel_ApplyUpgradePatch(PlayerModel __instance, PlayerState.Upgrade upgrade, bool isFirstTime)
@@ -120,6 +123,71 @@ namespace SRTweaks
                 {
                     __instance.maxAmmo = (int)PlayerInventoryLevels[4];
                     return false;
+                }
+
+                case PlayerState.Upgrade.HEALTH_1:
+                {
+                    __instance.maxHealth = Math.Max(__instance.maxHealth, Mathf.RoundToInt(150f));
+                    if ((double) __instance.currHealth >= (double) __instance.maxHealth)
+                        return false;
+                    __instance.healthBurstAfter = Math.Min(__instance.healthBurstAfter,
+                        __instance.worldModel.worldTime + 300.0);
+                    return false;
+                }
+                case PlayerState.Upgrade.HEALTH_2:
+                {
+                    __instance.maxHealth = Math.Max(__instance.maxHealth, Mathf.RoundToInt(200f));
+                    if ((double) __instance.currHealth >= (double) __instance.maxHealth)
+                        return false;;
+                    __instance.healthBurstAfter = Math.Min(__instance.healthBurstAfter,
+                        __instance.worldModel.worldTime + 300.0);
+                    return false;;
+                }
+                case PlayerState.Upgrade.HEALTH_3:
+                {
+                    __instance.maxHealth = Math.Max(__instance.maxHealth, Mathf.RoundToInt(250f));
+                    if ((double) __instance.currHealth >= (double) __instance.maxHealth)
+                        return false;;
+                    __instance.healthBurstAfter = Math.Min(__instance.healthBurstAfter,
+                        __instance.worldModel.worldTime + 300.0);
+                    return false;;
+                }
+                case PlayerState.Upgrade.HEALTH_4:
+                {
+                    __instance.maxHealth = Math.Max(__instance.maxHealth, Mathf.RoundToInt(350f));
+                    if ((double)__instance.currHealth >= (double)__instance.maxHealth)
+                        return false;;
+                    __instance.healthBurstAfter = Math.Min(__instance.healthBurstAfter,
+                        __instance.worldModel.worldTime + 300.0);
+                    return false;;
+                }
+
+                case PlayerState.Upgrade.ENERGY_1:
+                {
+                    __instance.maxEnergy = Math.Max(__instance.maxEnergy, Mathf.RoundToInt(150f));
+                    if ((double) __instance.currEnergy >= (double) __instance.maxEnergy)
+                        return false;;
+                    __instance.energyRecoverAfter = Math.Min(__instance.energyRecoverAfter,
+                        __instance.worldModel.worldTime + 300.0);
+                    return false;;
+                }
+                case PlayerState.Upgrade.ENERGY_2:
+                {
+                    __instance.maxEnergy = Math.Max(__instance.maxEnergy, Mathf.RoundToInt(200f));
+                    if ((double) __instance.currEnergy >= (double) __instance.maxEnergy)
+                        return false;;
+                    __instance.energyRecoverAfter = Math.Min(__instance.energyRecoverAfter,
+                        __instance.worldModel.worldTime + 300.0);
+                    return false;;
+                }
+                case PlayerState.Upgrade.ENERGY_3:
+                {
+                    __instance.maxEnergy = Math.Max(__instance.maxEnergy, Mathf.RoundToInt(250f));
+                    if ((double) __instance.currEnergy >= (double) __instance.maxEnergy)
+                        return false;;
+                    __instance.energyRecoverAfter = Math.Min(__instance.energyRecoverAfter,
+                        __instance.worldModel.worldTime + 300.0);
+                    return false;;
                 }
             }
 
