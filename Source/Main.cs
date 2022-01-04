@@ -1,9 +1,8 @@
-﻿using UnityEngine;
+﻿using System.Globalization;
+using UnityEngine;
 using System.Reflection;
-using Sentry;
 using SRML;
 using SRML.SR;
-using SRML.Console;
 using SRML.SR.SaveSystem;
 using SRML.SR.SaveSystem.Registry;
 
@@ -51,6 +50,95 @@ namespace SRTweaks
         public abstract void Save();
     }
 
+
+    public class NumberField<T>
+    {
+        private string valueString;
+
+        public void ShowGUI(GUILayoutOption[] layoutOptions)
+        {
+            string newValue = GUILayout.TextField(valueString, layoutOptions);
+            if (newValue != valueString)
+            {
+                if (typeof(T) == typeof(float))
+                {
+                    if (float.TryParse(newValue, out float dummy))
+                    {
+                        valueString = newValue;
+                    }
+                }
+                else if (typeof(T) == typeof(int))
+                {
+                    if (int.TryParse(newValue, out int dummy))
+                    {
+                        valueString = newValue;
+                    }
+                }
+                else if (typeof(T) == typeof(uint))
+                {
+                    if (uint.TryParse(newValue, out uint dummy))
+                    {
+                        valueString = newValue;
+                    }
+                }
+                else
+                {
+                    Main.Log("Unsupported type: " + typeof(T).FullName);
+                }
+            }
+        }
+
+        public void Load(T value)
+        {
+            if (typeof(T) == typeof(float))
+            {
+                valueString = ((float)(object)value).ToString(CultureInfo.InvariantCulture);
+            }
+            else if (typeof(T) == typeof(int))
+            {
+                valueString = ((int)(object)value).ToString();
+            }
+            else if (typeof(T) == typeof(uint))
+            {
+                valueString = ((uint)(object)value).ToString();
+            }
+            else
+            {
+                Main.Log("Unsupported type: " + typeof(T).FullName);
+            }
+        }
+
+        public T Save()
+        {
+            if (typeof(T) == typeof(float))
+            {
+                if (float.TryParse(valueString, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out float newValue))
+                {
+                    return (T)(object)newValue;
+                }
+            }
+            else if (typeof(T) == typeof(int))
+            {
+                if (int.TryParse(valueString, out int newValue))
+                {
+                    return (T)(object)newValue;
+                }
+            }
+            else if (typeof(T) == typeof(uint))
+            {
+                if (uint.TryParse(valueString, out uint newValue))
+                {
+                    return (T)(object)newValue;
+                }
+            }
+            else
+            {
+                Main.Log("Unsupported type: " + typeof(T).FullName);
+            }
+
+            return (T)(object)null;
+        }
+    }
 
     public class Main : ModEntryPoint
     {
