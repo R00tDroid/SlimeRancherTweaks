@@ -250,6 +250,8 @@ namespace SRTweaks
         private NumberField<uint> playerDamageMultiplier = new NumberField<uint>();
 
         private NumberField<uint>[] playerInventoryLevels;
+        private NumberField<uint>[] playerHealthLevels;
+        private NumberField<uint>[] playerEnergyLevels;
 
         public GameModeTweaksSettingsUI()
         {
@@ -257,6 +259,18 @@ namespace SRTweaks
             for (int i = 0; i < GameModeTweaks.PlayerInventoryLevels.Length; i++)
             {
                 playerInventoryLevels[i] = new NumberField<uint>();
+            }
+
+            playerHealthLevels = new NumberField<uint>[GameModeTweaks.PlayerHealthLevels.Length];
+            for (int i = 0; i < GameModeTweaks.PlayerHealthLevels.Length; i++)
+            {
+                playerHealthLevels[i] = new NumberField<uint>();
+            }
+
+            playerEnergyLevels = new NumberField<uint>[GameModeTweaks.PlayerEnergyLevels.Length];
+            for (int i = 0; i < GameModeTweaks.PlayerEnergyLevels.Length; i++)
+            {
+                playerEnergyLevels[i] = new NumberField<uint>();
             }
         }
 
@@ -282,6 +296,22 @@ namespace SRTweaks
                 playerInventoryLevels[i].ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
             }
             GUILayout.EndHorizontal();
+
+            GUILayout.Label("Player health levels (default: 100, 150, 200, 250, 350)");
+            GUILayout.BeginHorizontal();
+            for (int i = 0; i < GameModeTweaks.PlayerHealthLevels.Length; i++)
+            {
+                playerHealthLevels[i].ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.Label("Player energy levels (default:  100, 150, 200, 250)");
+            GUILayout.BeginHorizontal();
+            for (int i = 0; i < GameModeTweaks.PlayerEnergyLevels.Length; i++)
+            {
+                playerEnergyLevels[i].ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
+            }
+            GUILayout.EndHorizontal();
         }
 
         public override void Load()
@@ -296,6 +326,16 @@ namespace SRTweaks
             {
                 playerInventoryLevels[i].Load(GameModeTweaks.PlayerInventoryLevels[i]);
             }
+
+            for (int i = 0; i < GameModeTweaks.PlayerHealthLevels.Length; i++)
+            {
+                playerHealthLevels[i].Load(GameModeTweaks.PlayerHealthLevels[i]);
+            }
+
+            for (int i = 0; i < GameModeTweaks.PlayerEnergyLevels.Length; i++)
+            {
+                playerEnergyLevels[i].Load(GameModeTweaks.PlayerEnergyLevels[i]);
+            }
         }
 
         public override void Save()
@@ -304,11 +344,21 @@ namespace SRTweaks
             GameModeTweaks.SuppressTutorials = suppressTutorials;
             GameModeTweaks.InstantUpgrades = instantUpgrades;
             GameModeTweaks.ReceiveMails = receiveMails;
-             playerDamageMultiplier.Save(ref GameModeTweaks.PlayerDamageMultiplier);
+            playerDamageMultiplier.Save(ref GameModeTweaks.PlayerDamageMultiplier);
 
             for (int i = 0; i < GameModeTweaks.PlayerInventoryLevels.Length; i++)
             { 
                 playerInventoryLevels[i].Save(ref GameModeTweaks.PlayerInventoryLevels[i]);
+            }
+
+            for (int i = 0; i < GameModeTweaks.PlayerHealthLevels.Length; i++)
+            {
+                playerHealthLevels[i].Save(ref GameModeTweaks.PlayerHealthLevels[i]);
+            }
+
+            for (int i = 0; i < GameModeTweaks.PlayerEnergyLevels.Length; i++)
+            {
+                playerEnergyLevels[i].Save(ref GameModeTweaks.PlayerEnergyLevels[i]);
             }
         }
     }
