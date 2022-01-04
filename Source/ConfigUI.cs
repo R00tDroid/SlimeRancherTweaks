@@ -113,12 +113,12 @@ namespace SRTweaks
         {
             GUILayout.BeginVertical();
 
-            if (GUILayout.Button("Close"))
+            if (GUILayout.Button("Save & Close"))
             {
+                SaveConfig();
                 HideWindow();
             }
 
-            if (GUILayout.Button("Apply"))
             GUILayout.Space(5);
 
             GUILayoutOption[] tabButtonStyle = new GUILayoutOption[] { GUILayout.Width(100) };
