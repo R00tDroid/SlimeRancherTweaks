@@ -84,9 +84,9 @@ namespace SRTweaks
 
     public class DroneTweaksSettingsUI : ITweakSettingsUI
     {
-        private string droneLimit;
-        private string droneSpeedMultiplier;
-        private string droneInventoryMax;
+        private NumberField<uint> droneLimit = new NumberField<uint>();
+        private NumberField<uint> droneSpeedMultiplier = new NumberField<uint>();
+        private NumberField<uint> droneInventoryMax = new NumberField<uint>();
 
         public override string GetTabName()
         {
@@ -96,59 +96,27 @@ namespace SRTweaks
         public override void OnGUI()
         {
             GUILayout.Label("Maximum number of drones per ranch expansion (default: 2)");
-            string newValue = GUILayout.TextField(droneLimit, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
-            if (newValue != droneLimit)
-            {
-                if (uint.TryParse(newValue, out uint dummy))
-                {
-                    droneLimit = newValue;
-                }
-            }
+            droneLimit.ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
 
             GUILayout.Label("Movement speed (default: 100)");
-            newValue = GUILayout.TextField(droneSpeedMultiplier, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
-            if (newValue != droneSpeedMultiplier)
-            {
-                if (uint.TryParse(newValue, out uint dummy))
-                {
-                    droneSpeedMultiplier = newValue;
-                }
-            }
+            droneSpeedMultiplier.ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
 
             GUILayout.Label("Inventory size (default: 50)");
-            newValue = GUILayout.TextField(droneInventoryMax, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
-            if (newValue != droneInventoryMax)
-            {
-                if (uint.TryParse(newValue, out uint dummy))
-                {
-                    droneInventoryMax = newValue;
-                }
-            }
+            droneInventoryMax.ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
         }
 
         public override void Load()
         {
-            droneLimit = DroneTweaks.DroneLimit.ToString();
-            droneSpeedMultiplier = DroneTweaks.DroneSpeedMultiplier.ToString();
-            droneInventoryMax = DroneTweaks.DroneInventoryMax.ToString();
+            droneLimit.Load(DroneTweaks.DroneLimit);
+            droneSpeedMultiplier.Load(DroneTweaks.DroneSpeedMultiplier);
+            droneInventoryMax.Load(DroneTweaks.DroneInventoryMax);
         }
 
         public override void Save()
         {
-            if (uint.TryParse(droneLimit, out uint newValue))
-            {
-                DroneTweaks.DroneLimit = newValue;
-            }
-
-            if (uint.TryParse(droneSpeedMultiplier, out newValue))
-            {
-                DroneTweaks.DroneSpeedMultiplier = newValue;
-            }
-
-            if (uint.TryParse(droneInventoryMax, out newValue))
-            {
-                DroneTweaks.DroneInventoryMax = newValue;
-            }
+            droneLimit.Save(ref DroneTweaks.DroneLimit);
+            droneSpeedMultiplier.Save(ref DroneTweaks.DroneSpeedMultiplier);
+            droneInventoryMax.Save(ref DroneTweaks.DroneInventoryMax);
         }
     }
 
