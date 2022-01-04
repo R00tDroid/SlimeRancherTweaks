@@ -108,35 +108,33 @@ namespace SRTweaks
             }
         }
 
-        public T Save()
+        public void Save(ref T value)
         {
             if (typeof(T) == typeof(float))
             {
                 if (float.TryParse(valueString, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out float newValue))
                 {
-                    return (T)(object)newValue;
+                    value = (T)(object)newValue;
                 }
             }
             else if (typeof(T) == typeof(int))
             {
                 if (int.TryParse(valueString, out int newValue))
                 {
-                    return (T)(object)newValue;
+                    value = (T)(object)newValue;
                 }
             }
             else if (typeof(T) == typeof(uint))
             {
                 if (uint.TryParse(valueString, out uint newValue))
                 {
-                    return (T)(object)newValue;
+                    value = (T)(object)newValue;
                 }
             }
             else
             {
                 Main.Log("Unsupported type: " + typeof(T).FullName);
             }
-
-            return (T)(object)null;
         }
     }
 

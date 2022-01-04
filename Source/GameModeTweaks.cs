@@ -133,7 +133,7 @@ namespace SRTweaks
         private bool suppressTutorials;
         private bool instantUpgrades;
         private bool receiveMails;
-        private string playerDamageMultiplier;
+        private NumberField<uint> playerDamageMultiplier = new NumberField<uint>();
 
         private NumberField<uint>[] playerInventoryLevels;
 
@@ -159,14 +159,7 @@ namespace SRTweaks
             receiveMails = GUILayout.Toggle(receiveMails, "Receive mails (default: true)");
 
             GUILayout.Label("Player damage multiplier (default: 100)");
-            string newValue = GUILayout.TextField(playerDamageMultiplier, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
-            if (newValue != playerDamageMultiplier)
-            {
-                if (uint.TryParse(newValue, out uint dummy))
-                {
-                    playerDamageMultiplier = newValue;
-                }
-            }
+            playerDamageMultiplier.ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
 
             GUILayout.Label("Player inventory levels (default: 20, 30, 40, 50, 100)");
             GUILayout.BeginHorizontal();
@@ -183,7 +176,7 @@ namespace SRTweaks
             suppressTutorials = GameModeTweaks.SuppressTutorials;
             instantUpgrades = GameModeTweaks.InstantUpgrades;
             receiveMails = GameModeTweaks.ReceiveMails;
-            playerDamageMultiplier = GameModeTweaks.PlayerDamageMultiplier.ToString();
+            playerDamageMultiplier.Load(GameModeTweaks.PlayerDamageMultiplier);
 
             for (int i = 0; i < GameModeTweaks.PlayerInventoryLevels.Length; i++)
             {
@@ -197,15 +190,11 @@ namespace SRTweaks
             GameModeTweaks.SuppressTutorials = suppressTutorials;
             GameModeTweaks.InstantUpgrades = instantUpgrades;
             GameModeTweaks.ReceiveMails = receiveMails;
-
-            if (uint.TryParse(playerDamageMultiplier, out uint newValue))
-            {
-                GameModeTweaks.PlayerDamageMultiplier = newValue;
-            }
+             playerDamageMultiplier.Save(ref GameModeTweaks.PlayerDamageMultiplier);
 
             for (int i = 0; i < GameModeTweaks.PlayerInventoryLevels.Length; i++)
-            {
-                GameModeTweaks.PlayerInventoryLevels[i] = playerInventoryLevels[i].Save();
+            { 
+                playerInventoryLevels[i].Save(ref GameModeTweaks.PlayerInventoryLevels[i]);
             }
         }
     }
