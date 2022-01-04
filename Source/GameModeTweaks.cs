@@ -135,6 +135,17 @@ namespace SRTweaks
         private bool receiveMails;
         private string playerDamageMultiplier;
 
+        private NumberField<uint>[] playerInventoryLevels;
+
+        public GameModeTweaksSettingsUI()
+        {
+            playerInventoryLevels = new NumberField<uint>[GameModeTweaks.PlayerInventoryLevels.Length];
+            for (int i = 0; i < GameModeTweaks.PlayerInventoryLevels.Length; i++)
+            {
+                playerInventoryLevels[i] = new NumberField<uint>();
+            }
+        }
+
         public override string GetTabName()
         {
             return "Game Mode";
@@ -156,6 +167,14 @@ namespace SRTweaks
                     playerDamageMultiplier = newValue;
                 }
             }
+
+            GUILayout.Label("Player inventory levels (default: 20, 30, 40, 50, 100)");
+            GUILayout.BeginHorizontal();
+            for (int i = 0; i < GameModeTweaks.PlayerInventoryLevels.Length; i++)
+            { 
+                playerInventoryLevels[i].ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
+            }
+            GUILayout.EndHorizontal();
         }
 
         public override void Load()
@@ -165,6 +184,11 @@ namespace SRTweaks
             instantUpgrades = GameModeTweaks.InstantUpgrades;
             receiveMails = GameModeTweaks.ReceiveMails;
             playerDamageMultiplier = GameModeTweaks.PlayerDamageMultiplier.ToString();
+
+            for (int i = 0; i < GameModeTweaks.PlayerInventoryLevels.Length; i++)
+            {
+                playerInventoryLevels[i].Load(GameModeTweaks.PlayerInventoryLevels[i]);
+            }
         }
 
         public override void Save()
@@ -177,6 +201,11 @@ namespace SRTweaks
             if (uint.TryParse(playerDamageMultiplier, out uint newValue))
             {
                 GameModeTweaks.PlayerDamageMultiplier = newValue;
+            }
+
+            for (int i = 0; i < GameModeTweaks.PlayerInventoryLevels.Length; i++)
+            {
+                GameModeTweaks.PlayerInventoryLevels[i] = playerInventoryLevels[i].Save();
             }
         }
     }
