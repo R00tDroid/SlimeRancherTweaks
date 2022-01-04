@@ -15,9 +15,6 @@ namespace SRTweaks
 
         public override void PreLoad()
         {
-            SRML.Console.Console.RegisterCommand(new SetAirNetDurabilityCommand());
-            SRML.Console.Console.RegisterCommand(new SetAirNetRecoveryCommand());
-            SRML.Console.Console.RegisterCommand(new SetCollectorDelayCommand());
         }
 
         public override void GameLoaded()
@@ -130,106 +127,5 @@ namespace SRTweaks
             collectorDelayHours.Save(ref CorralTweaks.CollectorDelayHours);
             itemsPerFeed.Save(ref CorralTweaks.ItemsPerFeed);
         } 
-    }
-
-    public class SetAirNetDurabilityCommand : ConsoleCommand
-    {
-        public override string Usage => "airnetdurability [percentage]";
-        public override string ID => "airnetdurability";
-        public override string Description => "gets or sets the AirNet durability multiplier";
-
-        public override bool Execute(string[] args)
-        {
-            if (args == null || args.Length < 1)
-            {
-                Main.Log("AirNet durability: " + CorralTweaks.AirNetDurabilityMultiplier + "% (default: 100)");
-                return true;
-            }
-
-            if (!int.TryParse(args[0], out int newValue))
-            {
-                return false;
-            }
-
-            if (newValue < 0)
-            {
-                return false;
-            }
-
-            CorralTweaks.AirNetDurabilityMultiplier = (uint)newValue;
-            Main.ApplySettings();
-            return true;
-        }
-    }
-
-    public class SetAirNetRecoveryCommand : ConsoleCommand
-    {
-        public override string Usage => "airnetrecovery [delay] [duration]";
-        public override string ID => "airnetrecovery";
-        public override string Description => "gets or sets the AirNet recovery delay and duration in game hours";
-
-        public override bool Execute(string[] args)
-        {
-            if (args == null || args.Length < 2)
-            {
-                Main.Log("AirNet recovery: delay " + CorralTweaks.AirNetRecoverDelay.ToString(CultureInfo.InvariantCulture) + ", duration " + CorralTweaks.AirNetRecoverDuration.ToString(CultureInfo.InvariantCulture) + " (default: 0.1, 0.1)");
-                return true;
-            }
-
-            if (!float.TryParse(args[0], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out float newValue1))
-            {
-                return false;
-            }
-
-            if (!float.TryParse(args[1], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out float newValue2))
-            {
-                return false;
-            }
-
-            if (newValue1 < 0)
-            {
-                return false;
-            }
-
-            if (newValue2 < 0)
-            {
-                return false;
-            }
-
-            CorralTweaks.AirNetRecoverDelay = newValue1;
-            CorralTweaks.AirNetRecoverDuration = newValue2;
-            Main.ApplySettings();
-            return true;
-        }
-    }
-
-    public class SetCollectorDelayCommand : ConsoleCommand
-    {
-        public override string Usage => "collectordelay [game hours]";
-        public override string ID => "collectordelay";
-        public override string Description => "gets or sets the plort collector delay in game hours";
-
-        public override bool Execute(string[] args)
-        {
-            if (args == null || args.Length < 1)
-            {
-                Main.Log("Plot collector delay: " + CorralTweaks.CollectorDelayHours + " (default: 1)");
-                return true;
-            }
-
-            if (!float.TryParse(args[0], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out float newValue))
-            {
-                return false;
-            }
-
-            if (newValue < 0)
-            {
-                return false;
-            }
-
-            CorralTweaks.CollectorDelayHours = newValue;
-            Main.ApplySettings();
-            return true;
-        }
     }
 }
