@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using System.Reflection;
-using Sentry;
 using SRML;
 using SRML.SR;
-using SRML.Console;
 using SRML.SR.SaveSystem;
 using SRML.SR.SaveSystem.Registry;
 
@@ -50,7 +48,6 @@ namespace SRTweaks
         public abstract void Load();
         public abstract void Save();
     }
-
 
     public class Main : ModEntryPoint
     {

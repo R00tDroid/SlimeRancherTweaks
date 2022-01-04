@@ -1,4 +1,8 @@
-﻿using SRML.Console;
+﻿using System.Reflection;
+using HarmonyLib;
+using MonomiPark.SlimeRancher.DataModel;
+using SRML;
+using SRML.Console;
 using SRML.SR.SaveSystem.Data;
 using UnityEngine;
 
@@ -11,9 +15,29 @@ namespace SRTweaks
         public static bool InstantUpgrades = false; // Default false;
         public static bool ReceiveMails = true; // Default true;
         public static uint PlayerDamageMultiplier = 100; // Default 100;
+        public static uint[] PlayerInventoryLevels = new uint[5]
+        {
+            20,
+            30,
+            40,
+            50,
+            100
+        }; // Default 20, 30, 40, 50, 100;
 
         public override void PreLoad()
         {
+            Harmony harmony = HarmonyPatcher.GetInstance();
+
+            MethodInfo methodOriginal = typeof(PlayerModel).GetMethod("Reset");
+            MethodInfo methodNew = typeof(GameModeTweaks).GetMethod("PlayerModel_ResetPatch", BindingFlags.Static | BindingFlags.Public);
+            Main.Log("Patching PlayerModel.Reset: " + methodOriginal + " > " + methodNew);
+            harmony.Patch(methodOriginal, null, new HarmonyMethod(methodNew));
+
+            methodOriginal = typeof(PlayerModel).GetMethod("ApplyUpgrade");
+            methodNew = typeof(GameModeTweaks).GetMethod("PlayerModel_ApplyUpgradePatch", BindingFlags.Static | BindingFlags.Public);
+            Main.Log("Patching PlayerModel.ApplyUpgrade: " + methodOriginal + " > " + methodNew);
+            harmony.Patch(methodOriginal, new HarmonyMethod(methodNew));
+
             SRML.Console.Console.RegisterCommand(new SetTarrSpawnCommand());
             SRML.Console.Console.RegisterCommand(new SetSuppressTutorialsCommand());
             SRML.Console.Console.RegisterCommand(new SetInstantUpgradesCommand());
@@ -41,6 +65,11 @@ namespace SRTweaks
             data.SetValue("InstantUpgrades", InstantUpgrades);
             data.SetValue("ReceiveMails", ReceiveMails);
             data.SetValue("PlayerDamageMultiplier", PlayerDamageMultiplier);
+
+            for (int i = 0; i < PlayerInventoryLevels.Length ; i++)
+            {
+                data.SetValue("PlayerInventoryLevels" + i, PlayerInventoryLevels[i]);
+            }
         }
 
         public override void LoadSettings(CompoundDataPiece data)
@@ -50,12 +79,51 @@ namespace SRTweaks
             InstantUpgrades = Main.GetSaveValue<bool>(data, "InstantUpgrades", false);
             ReceiveMails = Main.GetSaveValue<bool>(data, "ReceiveMails", true);
             PlayerDamageMultiplier = Main.GetSaveValue<uint>(data, "PlayerDamageMultiplier", 100);
+
+            for (int i = 0; i < PlayerInventoryLevels.Length; i++)
+            {
+                PlayerInventoryLevels[i] = Main.GetSaveValue<uint>(data, "PlayerInventoryLevels" + i, (uint)PlayerModel.DEFAULT_MAX_AMMO[i]);
+            }
         }
 
         private ITweakSettingsUI SettingsUI = new GameModeTweaksSettingsUI();
         public override ITweakSettingsUI GetSettingsUI()
         {
             return SettingsUI;
+        }
+
+        public static void PlayerModel_ResetPatch(PlayerModel __instance, GameModeSettings modeSettings)
+        {
+            __instance.maxAmmo = (int)PlayerInventoryLevels[0];
+        }
+
+        public static bool PlayerModel_ApplyUpgradePatch(PlayerModel __instance, PlayerState.Upgrade upgrade, bool isFirstTime)
+        {
+            switch (upgrade)
+            {
+                case PlayerState.Upgrade.AMMO_1:
+                {
+                    __instance.maxAmmo = (int)PlayerInventoryLevels[1];
+                    return false;
+                }
+                case PlayerState.Upgrade.AMMO_2:
+                {
+                    __instance.maxAmmo = (int)PlayerInventoryLevels[2];
+                    return false;
+                }
+                case PlayerState.Upgrade.AMMO_3:
+                {
+                    __instance.maxAmmo = (int)PlayerInventoryLevels[3];
+                    return false;
+                }
+                case PlayerState.Upgrade.AMMO_4:
+                {
+                    __instance.maxAmmo = (int)PlayerInventoryLevels[4];
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 
@@ -65,7 +133,18 @@ namespace SRTweaks
         private bool suppressTutorials;
         private bool instantUpgrades;
         private bool receiveMails;
-        private string playerDamageMultiplier;
+        private NumberField<uint> playerDamageMultiplier = new NumberField<uint>();
+
+        private NumberField<uint>[] playerInventoryLevels;
+
+        public GameModeTweaksSettingsUI()
+        {
+            playerInventoryLevels = new NumberField<uint>[GameModeTweaks.PlayerInventoryLevels.Length];
+            for (int i = 0; i < GameModeTweaks.PlayerInventoryLevels.Length; i++)
+            {
+                playerInventoryLevels[i] = new NumberField<uint>();
+            }
+        }
 
         public override string GetTabName()
         {
@@ -80,14 +159,15 @@ namespace SRTweaks
             receiveMails = GUILayout.Toggle(receiveMails, "Receive mails (default: true)");
 
             GUILayout.Label("Player damage multiplier (default: 100)");
-            string newValue = GUILayout.TextField(playerDamageMultiplier, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
-            if (newValue != playerDamageMultiplier)
-            {
-                if (uint.TryParse(newValue, out uint dummy))
-                {
-                    playerDamageMultiplier = newValue;
-                }
+            playerDamageMultiplier.ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
+
+            GUILayout.Label("Player inventory levels (default: 20, 30, 40, 50, 100)");
+            GUILayout.BeginHorizontal();
+            for (int i = 0; i < GameModeTweaks.PlayerInventoryLevels.Length; i++)
+            { 
+                playerInventoryLevels[i].ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
             }
+            GUILayout.EndHorizontal();
         }
 
         public override void Load()
@@ -96,7 +176,12 @@ namespace SRTweaks
             suppressTutorials = GameModeTweaks.SuppressTutorials;
             instantUpgrades = GameModeTweaks.InstantUpgrades;
             receiveMails = GameModeTweaks.ReceiveMails;
-            playerDamageMultiplier = GameModeTweaks.PlayerDamageMultiplier.ToString();
+            playerDamageMultiplier.Load(GameModeTweaks.PlayerDamageMultiplier);
+
+            for (int i = 0; i < GameModeTweaks.PlayerInventoryLevels.Length; i++)
+            {
+                playerInventoryLevels[i].Load(GameModeTweaks.PlayerInventoryLevels[i]);
+            }
         }
 
         public override void Save()
@@ -105,10 +190,11 @@ namespace SRTweaks
             GameModeTweaks.SuppressTutorials = suppressTutorials;
             GameModeTweaks.InstantUpgrades = instantUpgrades;
             GameModeTweaks.ReceiveMails = receiveMails;
+             playerDamageMultiplier.Save(ref GameModeTweaks.PlayerDamageMultiplier);
 
-            if (uint.TryParse(playerDamageMultiplier, out uint newValue))
-            {
-                GameModeTweaks.PlayerDamageMultiplier = newValue;
+            for (int i = 0; i < GameModeTweaks.PlayerInventoryLevels.Length; i++)
+            { 
+                playerInventoryLevels[i].Save(ref GameModeTweaks.PlayerInventoryLevels[i]);
             }
         }
     }
@@ -146,8 +232,7 @@ namespace SRTweaks
 
         public override bool Execute(string[] args)
         {
-            if (args == null || args.Length < 1)
-            {
+            if (args == null || args.Length < 1) {
                 Main.Log("Are tutorials suppressed: " + GameModeTweaks.SuppressTutorials + " (default: False)");
                 return true;
             }
