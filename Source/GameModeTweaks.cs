@@ -25,6 +25,23 @@ namespace SRTweaks
             100
         }; // Default 20, 30, 40, 50, 100;
 
+        public static uint[] PlayerHealthLevels = new uint[5]
+        {
+            100,
+            150,
+            200,
+            250,
+            350
+        }; // Default 100, 150, 200, 250, 350;
+
+        public static uint[] PlayerEnergyLevels = new uint[4]
+        {
+            100,
+            150,
+            200,
+            250
+        }; // Default 100, 150, 200, 250;
+
         public override void PreLoad()
         {
             Harmony harmony = HarmonyPatcher.GetInstance();
@@ -96,8 +113,8 @@ namespace SRTweaks
         public static void PlayerModel_ResetPatch(PlayerModel __instance, GameModeSettings modeSettings)
         {
             __instance.maxAmmo = (int)PlayerInventoryLevels[0];
-            __instance.maxEnergy = 100;
-            __instance.maxHealth = 100;
+            __instance.maxHealth = (int)PlayerHealthLevels[0];
+            __instance.maxEnergy = (int)PlayerEnergyLevels[0];
         }
 
         public static bool PlayerModel_ApplyUpgradePatch(PlayerModel __instance, PlayerState.Upgrade upgrade, bool isFirstTime)
@@ -127,7 +144,7 @@ namespace SRTweaks
 
                 case PlayerState.Upgrade.HEALTH_1:
                 {
-                    __instance.maxHealth = Math.Max(__instance.maxHealth, Mathf.RoundToInt(150f));
+                    __instance.maxHealth = Math.Max(__instance.maxHealth, (int)PlayerHealthLevels[1]);
                     if ((double) __instance.currHealth >= (double) __instance.maxHealth)
                         return false;
                     __instance.healthBurstAfter = Math.Min(__instance.healthBurstAfter,
@@ -136,7 +153,7 @@ namespace SRTweaks
                 }
                 case PlayerState.Upgrade.HEALTH_2:
                 {
-                    __instance.maxHealth = Math.Max(__instance.maxHealth, Mathf.RoundToInt(200f));
+                    __instance.maxHealth = Math.Max(__instance.maxHealth, (int)PlayerHealthLevels[2]);
                     if ((double) __instance.currHealth >= (double) __instance.maxHealth)
                         return false;;
                     __instance.healthBurstAfter = Math.Min(__instance.healthBurstAfter,
@@ -145,7 +162,7 @@ namespace SRTweaks
                 }
                 case PlayerState.Upgrade.HEALTH_3:
                 {
-                    __instance.maxHealth = Math.Max(__instance.maxHealth, Mathf.RoundToInt(250f));
+                    __instance.maxHealth = Math.Max(__instance.maxHealth, (int)PlayerHealthLevels[3]);
                     if ((double) __instance.currHealth >= (double) __instance.maxHealth)
                         return false;;
                     __instance.healthBurstAfter = Math.Min(__instance.healthBurstAfter,
@@ -154,7 +171,7 @@ namespace SRTweaks
                 }
                 case PlayerState.Upgrade.HEALTH_4:
                 {
-                    __instance.maxHealth = Math.Max(__instance.maxHealth, Mathf.RoundToInt(350f));
+                    __instance.maxHealth = Math.Max(__instance.maxHealth, (int)PlayerHealthLevels[4]);
                     if ((double)__instance.currHealth >= (double)__instance.maxHealth)
                         return false;;
                     __instance.healthBurstAfter = Math.Min(__instance.healthBurstAfter,
@@ -164,7 +181,7 @@ namespace SRTweaks
 
                 case PlayerState.Upgrade.ENERGY_1:
                 {
-                    __instance.maxEnergy = Math.Max(__instance.maxEnergy, Mathf.RoundToInt(150f));
+                    __instance.maxEnergy = Math.Max(__instance.maxEnergy, (int)PlayerEnergyLevels[1]);
                     if ((double) __instance.currEnergy >= (double) __instance.maxEnergy)
                         return false;;
                     __instance.energyRecoverAfter = Math.Min(__instance.energyRecoverAfter,
@@ -173,7 +190,7 @@ namespace SRTweaks
                 }
                 case PlayerState.Upgrade.ENERGY_2:
                 {
-                    __instance.maxEnergy = Math.Max(__instance.maxEnergy, Mathf.RoundToInt(200f));
+                    __instance.maxEnergy = Math.Max(__instance.maxEnergy, (int)PlayerEnergyLevels[2]);
                     if ((double) __instance.currEnergy >= (double) __instance.maxEnergy)
                         return false;;
                     __instance.energyRecoverAfter = Math.Min(__instance.energyRecoverAfter,
@@ -182,7 +199,7 @@ namespace SRTweaks
                 }
                 case PlayerState.Upgrade.ENERGY_3:
                 {
-                    __instance.maxEnergy = Math.Max(__instance.maxEnergy, Mathf.RoundToInt(250f));
+                    __instance.maxEnergy = Math.Max(__instance.maxEnergy, (int)PlayerEnergyLevels[3]);
                     if ((double) __instance.currEnergy >= (double) __instance.maxEnergy)
                         return false;;
                     __instance.energyRecoverAfter = Math.Min(__instance.energyRecoverAfter,
