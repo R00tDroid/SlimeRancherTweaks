@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
 
@@ -10,13 +11,32 @@ namespace SRTweaks
         private bool windowVisible = false;
         private SRInput.InputMode previousInput;
 
+        private string[] tabNames;
+        private ITweakSettingsUI[] tabInstances;
+        private int currentTab = -1;
+
         void Awake()
         {
             LoadConfig();
 
-            if (Main.tweaks.Length > 0)
+            List<string> names = new List<string>();
+            List<ITweakSettingsUI> instances = new List<ITweakSettingsUI>();
+
+            foreach (ITweakBase tweak in Main.tweaks)
             {
-                currentTab = Main.tweaks[0];
+                ITweakSettingsUI ui = tweak.GetSettingsUI();
+                if (ui != null)
+                {
+                    names.Add(ui.GetTabName());
+                    instances.Add(ui);
+                }
+            }
+
+            tabNames = names.ToArray();
+            tabInstances = instances.ToArray();
+            if (tabNames.Length > 0)
+            {
+                currentTab = 0;
             }
         }
 
@@ -89,8 +109,6 @@ namespace SRTweaks
             }
         }
 
-        private ITweakBase currentTab = null;
-
         void WindowLayout(int windowId)
         {
             GUILayout.BeginVertical();
@@ -101,37 +119,19 @@ namespace SRTweaks
             }
 
             if (GUILayout.Button("Apply"))
-            {
-                SaveConfig();
-            }
-
             GUILayout.Space(5);
 
             GUILayoutOption[] tabButtonStyle = new GUILayoutOption[] { GUILayout.Width(100) };
 
-            GUILayout.BeginHorizontal();
-            foreach (ITweakBase tweak in Main.tweaks)
-            {
-                ITweakSettingsUI ui = tweak.GetSettingsUI();
-                if (ui != null)
-                {
-                    GUI.enabled = tweak != currentTab;
-                    if (GUILayout.Button(ui.GetTabName(), tabButtonStyle))
-                    {
-                        currentTab = tweak;
-                    }
-                }
-            }
-            GUI.enabled = true;
-            GUILayout.EndHorizontal();
+            currentTab = GUILayout.Toolbar(currentTab, tabNames, new GUILayoutOption[] {GUILayout.ExpandWidth(true) });
 
             GUILayout.Space(5);
 
             scrollPosition = GUILayout.BeginScrollView(scrollPosition);
 
-            if (currentTab != null)
+            if (currentTab >= 0)
             {
-                ITweakSettingsUI ui = currentTab.GetSettingsUI();
+                ITweakSettingsUI ui = tabInstances[currentTab];
                 if (ui != null)
                 {
                     ui.OnGUI();
