@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using HarmonyLib;
 using MonomiPark.SlimeRancher.DataModel;
 using SRML;
@@ -23,6 +24,32 @@ namespace SRTweaks
             50,
             100
         }; // Default 20, 30, 40, 50, 100;
+
+        public static uint[] PlayerHealthLevels = new uint[5]
+        {
+            100,
+            150,
+            200,
+            250,
+            350
+        }; // Default 100, 150, 200, 250, 350;
+
+        public static uint[] PlayerEnergyLevels = new uint[4]
+        {
+            100,
+            150,
+            200,
+            250
+        }; // Default 100, 150, 200, 250;
+
+        public static readonly int[] DEFAULT_HEALTH_ENERGY = new int[5]
+        {
+            100,
+            150,
+            200,
+            250,
+            350
+        };
 
         public override void PreLoad()
         {
@@ -70,6 +97,16 @@ namespace SRTweaks
             {
                 data.SetValue("PlayerInventoryLevels" + i, PlayerInventoryLevels[i]);
             }
+
+            for (int i = 0; i < PlayerHealthLevels.Length; i++)
+            {
+                data.SetValue("PlayerHealthLevels" + i, PlayerHealthLevels[i]);
+            }
+
+            for (int i = 0; i < PlayerEnergyLevels.Length; i++)
+            {
+                data.SetValue("PlayerEnergyLevels" + i, PlayerEnergyLevels[i]);
+            }
         }
 
         public override void LoadSettings(CompoundDataPiece data)
@@ -84,6 +121,16 @@ namespace SRTweaks
             {
                 PlayerInventoryLevels[i] = Main.GetSaveValue<uint>(data, "PlayerInventoryLevels" + i, (uint)PlayerModel.DEFAULT_MAX_AMMO[i]);
             }
+
+            for (int i = 0; i < PlayerHealthLevels.Length; i++)
+            {
+                PlayerHealthLevels[i] = Main.GetSaveValue<uint>(data, "PlayerHealthLevels" + i, (uint)DEFAULT_HEALTH_ENERGY[i]);
+            }
+
+            for (int i = 0; i < PlayerEnergyLevels.Length; i++)
+            {
+                PlayerEnergyLevels[i] = Main.GetSaveValue<uint>(data, "PlayerEnergyLevels" + i, (uint)DEFAULT_HEALTH_ENERGY[i]);
+            }
         }
 
         private ITweakSettingsUI SettingsUI = new GameModeTweaksSettingsUI();
@@ -95,6 +142,8 @@ namespace SRTweaks
         public static void PlayerModel_ResetPatch(PlayerModel __instance, GameModeSettings modeSettings)
         {
             __instance.maxAmmo = (int)PlayerInventoryLevels[0];
+            __instance.maxHealth = (int)PlayerHealthLevels[0];
+            __instance.maxEnergy = (int)PlayerEnergyLevels[0];
         }
 
         public static bool PlayerModel_ApplyUpgradePatch(PlayerModel __instance, PlayerState.Upgrade upgrade, bool isFirstTime)
@@ -121,6 +170,71 @@ namespace SRTweaks
                     __instance.maxAmmo = (int)PlayerInventoryLevels[4];
                     return false;
                 }
+
+                case PlayerState.Upgrade.HEALTH_1:
+                {
+                    __instance.maxHealth = Math.Max(__instance.maxHealth, (int)PlayerHealthLevels[1]);
+                    if ((double) __instance.currHealth >= (double) __instance.maxHealth)
+                        return false;
+                    __instance.healthBurstAfter = Math.Min(__instance.healthBurstAfter,
+                        __instance.worldModel.worldTime + 300.0);
+                    return false;
+                }
+                case PlayerState.Upgrade.HEALTH_2:
+                {
+                    __instance.maxHealth = Math.Max(__instance.maxHealth, (int)PlayerHealthLevels[2]);
+                    if ((double) __instance.currHealth >= (double) __instance.maxHealth)
+                        return false;;
+                    __instance.healthBurstAfter = Math.Min(__instance.healthBurstAfter,
+                        __instance.worldModel.worldTime + 300.0);
+                    return false;;
+                }
+                case PlayerState.Upgrade.HEALTH_3:
+                {
+                    __instance.maxHealth = Math.Max(__instance.maxHealth, (int)PlayerHealthLevels[3]);
+                    if ((double) __instance.currHealth >= (double) __instance.maxHealth)
+                        return false;;
+                    __instance.healthBurstAfter = Math.Min(__instance.healthBurstAfter,
+                        __instance.worldModel.worldTime + 300.0);
+                    return false;;
+                }
+                case PlayerState.Upgrade.HEALTH_4:
+                {
+                    __instance.maxHealth = Math.Max(__instance.maxHealth, (int)PlayerHealthLevels[4]);
+                    if ((double)__instance.currHealth >= (double)__instance.maxHealth)
+                        return false;;
+                    __instance.healthBurstAfter = Math.Min(__instance.healthBurstAfter,
+                        __instance.worldModel.worldTime + 300.0);
+                    return false;;
+                }
+
+                case PlayerState.Upgrade.ENERGY_1:
+                {
+                    __instance.maxEnergy = Math.Max(__instance.maxEnergy, (int)PlayerEnergyLevels[1]);
+                    if ((double) __instance.currEnergy >= (double) __instance.maxEnergy)
+                        return false;;
+                    __instance.energyRecoverAfter = Math.Min(__instance.energyRecoverAfter,
+                        __instance.worldModel.worldTime + 300.0);
+                    return false;;
+                }
+                case PlayerState.Upgrade.ENERGY_2:
+                {
+                    __instance.maxEnergy = Math.Max(__instance.maxEnergy, (int)PlayerEnergyLevels[2]);
+                    if ((double) __instance.currEnergy >= (double) __instance.maxEnergy)
+                        return false;;
+                    __instance.energyRecoverAfter = Math.Min(__instance.energyRecoverAfter,
+                        __instance.worldModel.worldTime + 300.0);
+                    return false;;
+                }
+                case PlayerState.Upgrade.ENERGY_3:
+                {
+                    __instance.maxEnergy = Math.Max(__instance.maxEnergy, (int)PlayerEnergyLevels[3]);
+                    if ((double) __instance.currEnergy >= (double) __instance.maxEnergy)
+                        return false;;
+                    __instance.energyRecoverAfter = Math.Min(__instance.energyRecoverAfter,
+                        __instance.worldModel.worldTime + 300.0);
+                    return false;;
+                }
             }
 
             return true;
@@ -136,6 +250,8 @@ namespace SRTweaks
         private NumberField<uint> playerDamageMultiplier = new NumberField<uint>();
 
         private NumberField<uint>[] playerInventoryLevels;
+        private NumberField<uint>[] playerHealthLevels;
+        private NumberField<uint>[] playerEnergyLevels;
 
         public GameModeTweaksSettingsUI()
         {
@@ -143,6 +259,18 @@ namespace SRTweaks
             for (int i = 0; i < GameModeTweaks.PlayerInventoryLevels.Length; i++)
             {
                 playerInventoryLevels[i] = new NumberField<uint>();
+            }
+
+            playerHealthLevels = new NumberField<uint>[GameModeTweaks.PlayerHealthLevels.Length];
+            for (int i = 0; i < GameModeTweaks.PlayerHealthLevels.Length; i++)
+            {
+                playerHealthLevels[i] = new NumberField<uint>();
+            }
+
+            playerEnergyLevels = new NumberField<uint>[GameModeTweaks.PlayerEnergyLevels.Length];
+            for (int i = 0; i < GameModeTweaks.PlayerEnergyLevels.Length; i++)
+            {
+                playerEnergyLevels[i] = new NumberField<uint>();
             }
         }
 
@@ -168,6 +296,22 @@ namespace SRTweaks
                 playerInventoryLevels[i].ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
             }
             GUILayout.EndHorizontal();
+
+            GUILayout.Label("Player health levels (default: 100, 150, 200, 250, 350)");
+            GUILayout.BeginHorizontal();
+            for (int i = 0; i < GameModeTweaks.PlayerHealthLevels.Length; i++)
+            {
+                playerHealthLevels[i].ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
+            }
+            GUILayout.EndHorizontal();
+
+            GUILayout.Label("Player energy levels (default:  100, 150, 200, 250)");
+            GUILayout.BeginHorizontal();
+            for (int i = 0; i < GameModeTweaks.PlayerEnergyLevels.Length; i++)
+            {
+                playerEnergyLevels[i].ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
+            }
+            GUILayout.EndHorizontal();
         }
 
         public override void Load()
@@ -182,6 +326,16 @@ namespace SRTweaks
             {
                 playerInventoryLevels[i].Load(GameModeTweaks.PlayerInventoryLevels[i]);
             }
+
+            for (int i = 0; i < GameModeTweaks.PlayerHealthLevels.Length; i++)
+            {
+                playerHealthLevels[i].Load(GameModeTweaks.PlayerHealthLevels[i]);
+            }
+
+            for (int i = 0; i < GameModeTweaks.PlayerEnergyLevels.Length; i++)
+            {
+                playerEnergyLevels[i].Load(GameModeTweaks.PlayerEnergyLevels[i]);
+            }
         }
 
         public override void Save()
@@ -190,11 +344,21 @@ namespace SRTweaks
             GameModeTweaks.SuppressTutorials = suppressTutorials;
             GameModeTweaks.InstantUpgrades = instantUpgrades;
             GameModeTweaks.ReceiveMails = receiveMails;
-             playerDamageMultiplier.Save(ref GameModeTweaks.PlayerDamageMultiplier);
+            playerDamageMultiplier.Save(ref GameModeTweaks.PlayerDamageMultiplier);
 
             for (int i = 0; i < GameModeTweaks.PlayerInventoryLevels.Length; i++)
             { 
                 playerInventoryLevels[i].Save(ref GameModeTweaks.PlayerInventoryLevels[i]);
+            }
+
+            for (int i = 0; i < GameModeTweaks.PlayerHealthLevels.Length; i++)
+            {
+                playerHealthLevels[i].Save(ref GameModeTweaks.PlayerHealthLevels[i]);
+            }
+
+            for (int i = 0; i < GameModeTweaks.PlayerEnergyLevels.Length; i++)
+            {
+                playerEnergyLevels[i].Save(ref GameModeTweaks.PlayerEnergyLevels[i]);
             }
         }
     }
