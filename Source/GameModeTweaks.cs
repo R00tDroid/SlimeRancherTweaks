@@ -42,6 +42,15 @@ namespace SRTweaks
             250
         }; // Default 100, 150, 200, 250;
 
+        public static readonly int[] DEFAULT_HEALTH_ENERGY = new int[5]
+        {
+            100,
+            150,
+            200,
+            250,
+            350
+        };
+
         public override void PreLoad()
         {
             Harmony harmony = HarmonyPatcher.GetInstance();
@@ -88,6 +97,16 @@ namespace SRTweaks
             {
                 data.SetValue("PlayerInventoryLevels" + i, PlayerInventoryLevels[i]);
             }
+
+            for (int i = 0; i < PlayerHealthLevels.Length; i++)
+            {
+                data.SetValue("PlayerHealthLevels" + i, PlayerHealthLevels[i]);
+            }
+
+            for (int i = 0; i < PlayerEnergyLevels.Length; i++)
+            {
+                data.SetValue("PlayerEnergyLevels" + i, PlayerEnergyLevels[i]);
+            }
         }
 
         public override void LoadSettings(CompoundDataPiece data)
@@ -101,6 +120,16 @@ namespace SRTweaks
             for (int i = 0; i < PlayerInventoryLevels.Length; i++)
             {
                 PlayerInventoryLevels[i] = Main.GetSaveValue<uint>(data, "PlayerInventoryLevels" + i, (uint)PlayerModel.DEFAULT_MAX_AMMO[i]);
+            }
+
+            for (int i = 0; i < PlayerHealthLevels.Length; i++)
+            {
+                PlayerHealthLevels[i] = Main.GetSaveValue<uint>(data, "PlayerHealthLevels" + i, (uint)DEFAULT_HEALTH_ENERGY[i]);
+            }
+
+            for (int i = 0; i < PlayerEnergyLevels.Length; i++)
+            {
+                PlayerEnergyLevels[i] = Main.GetSaveValue<uint>(data, "PlayerEnergyLevels" + i, (uint)DEFAULT_HEALTH_ENERGY[i]);
             }
         }
 
