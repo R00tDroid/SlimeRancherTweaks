@@ -84,11 +84,11 @@ namespace SRTweaks
 
     public class CorralTweaksSettingsUI : ITweakSettingsUI
     {
-        private string airNetDurabilityMultiplier;
-        private string airNetRecoverDelay;
-        private string airNetRecoverDuration;
-        private string collectorDelayHours;
-        private string itemsPerFeed;
+        private NumberField<uint> airNetDurabilityMultiplier = new NumberField<uint>();
+        private NumberField<float> airNetRecoverDelay = new NumberField<float>();
+        private NumberField<float> airNetRecoverDuration = new NumberField<float>();
+        private NumberField<float> collectorDelayHours = new NumberField<float>();
+        private NumberField<uint> itemsPerFeed = new NumberField<uint>();
 
         public override string GetTabName()
         {
@@ -98,91 +98,37 @@ namespace SRTweaks
         public override void OnGUI()
         {
             GUILayout.Label("AirNet durability (default: 100)");
-            string newValue = GUILayout.TextField(airNetDurabilityMultiplier, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
-            if (newValue != airNetDurabilityMultiplier)
-            {
-                if (uint.TryParse(newValue, out uint dummy))
-                {
-                    airNetDurabilityMultiplier = newValue;
-                }
-            }
+            airNetDurabilityMultiplier.ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
 
             GUILayout.Label("AirNet recovery delay in game hours (default: 0.1)");
-            newValue = GUILayout.TextField(airNetRecoverDelay, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
-            if (newValue != airNetRecoverDelay)
-            {
-                if (float.TryParse(newValue, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out float dummy))
-                {
-                    airNetRecoverDelay = newValue;
-                }
-            }
+            airNetRecoverDelay.ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
 
             GUILayout.Label("AirNet recovery time in game hours (default: 0.1)");
-            newValue = GUILayout.TextField(airNetRecoverDuration, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
-            if (newValue != airNetRecoverDuration)
-            {
-                if (float.TryParse(newValue, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out float dummy))
-                {
-                    airNetRecoverDuration = newValue;
-                }
-            }
+            airNetRecoverDuration.ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
 
             GUILayout.Label("Plot collector delay in game hours (default: 1.0)");
-            newValue = GUILayout.TextField(collectorDelayHours, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
-            if (newValue != collectorDelayHours)
-            {
-                if (float.TryParse(newValue, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out float dummy))
-                {
-                    collectorDelayHours = newValue;
-                }
-            }
+            collectorDelayHours.ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
 
             GUILayout.Label("Feeder items to drop per cycle (default: 6)");
-            newValue = GUILayout.TextField(itemsPerFeed, new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
-            if (newValue != itemsPerFeed)
-            {
-                if (uint.TryParse(newValue, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out uint dummy))
-                {
-                    itemsPerFeed = newValue;
-                }
-            }
+            itemsPerFeed.ShowGUI(new GUILayoutOption[] { GUILayout.ExpandWidth(true) });
         }
 
         public override void Load()
         {
-            airNetDurabilityMultiplier = CorralTweaks.AirNetDurabilityMultiplier.ToString();
-            airNetRecoverDelay = CorralTweaks.AirNetRecoverDelay.ToString(CultureInfo.InvariantCulture);
-            airNetRecoverDuration = CorralTweaks.AirNetRecoverDuration.ToString(CultureInfo.InvariantCulture);
-            collectorDelayHours = CorralTweaks.CollectorDelayHours.ToString(CultureInfo.InvariantCulture);
-            itemsPerFeed = CorralTweaks.ItemsPerFeed.ToString(CultureInfo.InvariantCulture);
+            airNetDurabilityMultiplier.Load(CorralTweaks.AirNetDurabilityMultiplier);
+            airNetRecoverDelay.Load(CorralTweaks.AirNetRecoverDelay);
+            airNetRecoverDuration.Load(CorralTweaks.AirNetRecoverDuration);
+            collectorDelayHours.Load(CorralTweaks.CollectorDelayHours);
+            itemsPerFeed.Load(CorralTweaks.ItemsPerFeed);
         }
 
         public override void Save()
         {
-            if (uint.TryParse(airNetDurabilityMultiplier, out uint newValue))
-            {
-                CorralTweaks.AirNetDurabilityMultiplier = newValue;
-            }
-
-            if (float.TryParse(airNetRecoverDelay, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out float newFloatValue))
-            {
-                CorralTweaks.AirNetRecoverDelay = newFloatValue;
-            }
-
-            if (float.TryParse(airNetRecoverDuration, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out newFloatValue))
-            {
-                CorralTweaks.AirNetRecoverDuration = newFloatValue;
-            }
-
-            if (float.TryParse(collectorDelayHours, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out newFloatValue))
-            {
-                CorralTweaks.CollectorDelayHours = newFloatValue;
-            }
-
-            if (uint.TryParse(itemsPerFeed, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out uint newShortValue))
-            {
-                CorralTweaks.ItemsPerFeed = newShortValue;
-            }
+            airNetDurabilityMultiplier.Save(ref CorralTweaks.AirNetDurabilityMultiplier);
+            airNetRecoverDelay.Save(ref CorralTweaks.AirNetRecoverDelay);
+            airNetRecoverDuration.Save(ref CorralTweaks.AirNetRecoverDuration);
+            collectorDelayHours.Save(ref CorralTweaks.CollectorDelayHours);
+            itemsPerFeed.Save(ref CorralTweaks.ItemsPerFeed);
         } 
     }
 
