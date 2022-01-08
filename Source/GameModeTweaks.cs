@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using MonomiPark.SlimeRancher.DataModel;
@@ -78,6 +80,24 @@ namespace SRTweaks
             SRSingleton<SceneContext>.Instance.GameModeConfig.GetModeSettings().immediateUpgrades = InstantUpgrades;
             SRSingleton<SceneContext>.Instance.GameModeConfig.GetModeSettings().suppressStory = !ReceiveMails;
             SRSingleton<SceneContext>.Instance.GameModeConfig.GetModeSettings().playerDamageMultiplier = PlayerDamageMultiplier / 100.0f;
+
+            // Set limits to lowest to ensure they're reset
+            SRSingleton<SceneContext>.Instance.GameModel.player.maxHealth = (int)PlayerHealthLevels[0];
+            SRSingleton<SceneContext>.Instance.GameModel.player.maxEnergy = (int)PlayerEnergyLevels[0];
+            SRSingleton<SceneContext>.Instance.GameModel.player.maxAmmo = (int)PlayerInventoryLevels[0];
+
+            // Re-apply upgrades
+            SRSingleton<SceneContext>.Instance.GameModel.player.SetUpgrades(((IEnumerable<PlayerState.Upgrade>)Enum.GetValues(typeof(PlayerState.Upgrade))).ToList<PlayerState.Upgrade>());
+
+            // Reduce current values if higher than new limit
+            SRSingleton<SceneContext>.Instance.GameModel.player.currHealth = Math.Min(
+                SRSingleton<SceneContext>.Instance.GameModel.player.currHealth,
+                SRSingleton<SceneContext>.Instance.GameModel.player.maxHealth
+            );
+            SRSingleton<SceneContext>.Instance.GameModel.player.currEnergy = Math.Min(
+                SRSingleton<SceneContext>.Instance.GameModel.player.currEnergy,
+                SRSingleton<SceneContext>.Instance.GameModel.player.maxEnergy
+            );
         }
 
         public override void SaveSettings(CompoundDataPiece data)
@@ -179,25 +199,25 @@ namespace SRTweaks
                 {
                     __instance.maxHealth = Math.Max(__instance.maxHealth, (int)PlayerHealthLevels[2]);
                     if ((double) __instance.currHealth >= (double) __instance.maxHealth)
-                        return false;;
+                        return false;
                     __instance.healthBurstAfter = Math.Min(__instance.healthBurstAfter,
                         __instance.worldModel.worldTime + 300.0);
-                    return false;;
+                    return false;
                 }
                 case PlayerState.Upgrade.HEALTH_3:
                 {
                     __instance.maxHealth = Math.Max(__instance.maxHealth, (int)PlayerHealthLevels[3]);
                     if ((double) __instance.currHealth >= (double) __instance.maxHealth)
-                        return false;;
+                        return false;
                     __instance.healthBurstAfter = Math.Min(__instance.healthBurstAfter,
                         __instance.worldModel.worldTime + 300.0);
-                    return false;;
+                    return false;
                 }
                 case PlayerState.Upgrade.HEALTH_4:
                 {
                     __instance.maxHealth = Math.Max(__instance.maxHealth, (int)PlayerHealthLevels[4]);
                     if ((double)__instance.currHealth >= (double)__instance.maxHealth)
-                        return false;;
+                        return false;
                     __instance.healthBurstAfter = Math.Min(__instance.healthBurstAfter,
                         __instance.worldModel.worldTime + 300.0);
                     return false;;
@@ -207,7 +227,7 @@ namespace SRTweaks
                 {
                     __instance.maxEnergy = Math.Max(__instance.maxEnergy, (int)PlayerEnergyLevels[1]);
                     if ((double) __instance.currEnergy >= (double) __instance.maxEnergy)
-                        return false;;
+                        return false;
                     __instance.energyRecoverAfter = Math.Min(__instance.energyRecoverAfter,
                         __instance.worldModel.worldTime + 300.0);
                     return false;;
@@ -216,7 +236,7 @@ namespace SRTweaks
                 {
                     __instance.maxEnergy = Math.Max(__instance.maxEnergy, (int)PlayerEnergyLevels[2]);
                     if ((double) __instance.currEnergy >= (double) __instance.maxEnergy)
-                        return false;;
+                        return false;
                     __instance.energyRecoverAfter = Math.Min(__instance.energyRecoverAfter,
                         __instance.worldModel.worldTime + 300.0);
                     return false;;
@@ -225,7 +245,7 @@ namespace SRTweaks
                 {
                     __instance.maxEnergy = Math.Max(__instance.maxEnergy, (int)PlayerEnergyLevels[3]);
                     if ((double) __instance.currEnergy >= (double) __instance.maxEnergy)
-                        return false;;
+                        return false;
                     __instance.energyRecoverAfter = Math.Min(__instance.energyRecoverAfter,
                         __instance.worldModel.worldTime + 300.0);
                     return false;;
