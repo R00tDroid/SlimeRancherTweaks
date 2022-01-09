@@ -105,7 +105,7 @@ namespace SRTweaks
         {
             if (windowVisible)
             {
-                windowRect = GUI.Window(0, windowRect, WindowLayout, "Slime Rancher Game Tweaks");
+                windowRect = GUI.Window(0, windowRect, WindowLayout, "Slime Rancher Game Tweaks " + SRTweaksInfo.ModVersion);
             }
         }
 

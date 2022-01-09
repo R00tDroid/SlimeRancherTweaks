@@ -60,3 +60,4 @@ crashlytics-build.properties
 
 /Libs/Assembly-CSharp.dll
 /Libs/GameLocation.txt
+/Source/Version.cs
