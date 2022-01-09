@@ -13,44 +13,28 @@ namespace SRTweaks
         public static float CollectorDelayHours = 1.0f; // default 1.0
         public static uint ItemsPerFeed = 6; // default 6;
 
-        public override void PreLoad()
-        {
-        }
 
-        public override void GameLoaded()
+        public override void Load()
         {
+            GameObject corralPrefab = SRSingleton<GameContext>.Instance.LookupDirector.GetPlotPrefab(LandPlot.Id.CORRAL);
+            Main.Log("Injecting CorralTweaksComponent: " + corralPrefab);
+            if (corralPrefab.GetComponent<CorralTweaksComponent>() == null)
+            {
+                CorralTweaksComponent corralTweaks = corralPrefab.AddComponent<CorralTweaksComponent>();
+                Main.Log("Created: " + corralTweaks);
+            }
+            else
+            {
+                Main.Log("already present");
+            }
         }
 
         public override void ApplySettings()
         {
-            // Set airnet durability by reducing hit damage
-            AirNet[] airnets = SRBehaviour.FindObjectsOfType<AirNet>();
-            float airNetDurability = AirNetDurabilityMultiplier / 100.0f;
-            foreach (AirNet airnet in airnets)
+            CorralTweaksComponent[] tweakComponents = SRBehaviour.FindObjectsOfType<CorralTweaksComponent>();
+            foreach (CorralTweaksComponent tweakComponent in tweakComponents)
             {
-                airnet.dmgPerImpulse = 1f / (float) airnet.hitForceToDestroy / airNetDurability;
-                airnet.recoverStartTime = AirNetRecoverDelay;
-                airnet.hoursToRecover = AirNetRecoverDuration;
-            }
-
-            // Set plort collector delay
-            PlortCollector[] plortCollectors = SRBehaviour.FindObjectsOfType<PlortCollector>();
-            foreach (PlortCollector plortCollector in plortCollectors)
-            {
-                plortCollector.collectPeriod = CollectorDelayHours;
-
-                if (plortCollector.model.collectorNextTime - plortCollector.timeDir.worldModel.worldTime > 3600.0 * (double)plortCollector.collectPeriod)
-                {
-                    Main.Log("Reset plort collector schedule");
-                    plortCollector.model.collectorNextTime = plortCollector.timeDir.worldModel.worldTime;
-                }
-            }
-
-            // Set amount of items a feeder will drop
-            SlimeFeeder[] slimeFeeders = SRBehaviour.FindObjectsOfType<SlimeFeeder>();
-            foreach (SlimeFeeder slimeFeeder in slimeFeeders)
-            {
-                slimeFeeder.itemsPerFeeding = (int)ItemsPerFeed;
+                tweakComponent.ApplySettings();
             }
         }
 
@@ -127,5 +111,45 @@ namespace SRTweaks
             collectorDelayHours.Save(ref CorralTweaks.CollectorDelayHours);
             itemsPerFeed.Save(ref CorralTweaks.ItemsPerFeed);
         } 
+    }
+
+    class CorralTweaksComponent : MonoBehaviour
+    {
+        public void OnEnable()
+        {
+            ApplySettings();
+        }
+
+        public void ApplySettings()
+        {
+            Main.Log("Apply corral tweaks: " + gameObject);
+
+            // Set airnet durability by reducing hit damage
+            float airNetDurability = CorralTweaks.AirNetDurabilityMultiplier / 100.0f;
+            foreach (AirNet airnet in gameObject.GetComponentsInChildren<AirNet>())
+            {
+                airnet.dmgPerImpulse = 1f / (float)airnet.hitForceToDestroy / airNetDurability;
+                airnet.recoverStartTime = CorralTweaks.AirNetRecoverDelay;
+                airnet.hoursToRecover = CorralTweaks.AirNetRecoverDuration;
+            }
+
+            // Set plort collector delay
+            foreach (PlortCollector plortCollector in gameObject.GetComponentsInChildren<PlortCollector>())
+            {
+                plortCollector.collectPeriod = CorralTweaks.CollectorDelayHours;
+
+                if (plortCollector.model.collectorNextTime - plortCollector.timeDir.worldModel.worldTime > 3600.0 * (double)plortCollector.collectPeriod)
+                {
+                    Main.Log("Reset plort collector schedule");
+                    plortCollector.model.collectorNextTime = plortCollector.timeDir.worldModel.worldTime;
+                }
+            }
+
+            // Set amount of items a feeder will drop
+            foreach (SlimeFeeder slimeFeeder in gameObject.GetComponentsInChildren<SlimeFeeder>())
+            {
+                slimeFeeder.itemsPerFeeding = (int)CorralTweaks.ItemsPerFeed;
+            }
+        }
     }
 }
