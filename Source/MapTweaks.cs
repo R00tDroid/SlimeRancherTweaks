@@ -30,14 +30,6 @@ namespace SRTweaks
             harmony.Patch(methodOriginal, new HarmonyMethod(methodNew));
         }
 
-        public override void GameLoaded()
-        {
-        }
-
-        public override void ApplySettings()
-        {
-        }
-
         public override void SaveSettings(CompoundDataPiece data)
         {
             data.SetValue("ShowGordos", ShowGordos);

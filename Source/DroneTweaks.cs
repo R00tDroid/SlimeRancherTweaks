@@ -25,10 +25,6 @@ namespace SRTweaks
             harmony.Patch(methodOriginal, new HarmonyMethod(methodNew));
         }
 
-        public override void GameLoaded()
-        {
-        }
-
         public override void ApplySettings()
         {
             // Set drone limit per ranch expansion
