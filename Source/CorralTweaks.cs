@@ -17,7 +17,7 @@ namespace SRTweaks
         public override void Load()
         {
             GameObject corralPrefab = SRSingleton<GameContext>.Instance.LookupDirector.GetPlotPrefab(LandPlot.Id.CORRAL);
-            Main.Log("Injecting CorralTweaksComponent: " + corralPrefab);
+            Main.Log("Injecting CorralTweaksComponent into LandPlot.Id.CORRAL: " + corralPrefab);
             if (corralPrefab.GetComponent<CorralTweaksComponent>() == null)
             {
                 CorralTweaksComponent corralTweaks = corralPrefab.AddComponent<CorralTweaksComponent>();
