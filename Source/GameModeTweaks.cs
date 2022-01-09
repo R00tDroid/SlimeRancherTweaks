@@ -68,10 +68,6 @@ namespace SRTweaks
             harmony.Patch(methodOriginal, new HarmonyMethod(methodNew));
         }
 
-        public override void GameLoaded()
-        {
-        }
-
         public override void ApplySettings()
         {
             // Set Gamemode spawning

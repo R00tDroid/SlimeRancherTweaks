@@ -25,8 +25,31 @@ namespace SRTweaks
             harmony.Patch(methodOriginal, new HarmonyMethod(methodNew));
         }
 
-        public override void GameLoaded()
+        public override void Load()
         {
+            GameObject dronePrefab = SRSingleton<GameContext>.Instance.LookupDirector.GetGadgetDefinition(Gadget.Id.DRONE).prefab;
+            Main.Log("Injecting DroneTweaksComponent into Gadget.Id.DRONE: " + dronePrefab);
+            if (dronePrefab.GetComponent<DroneTweaksComponent>() == null)
+            {
+                DroneTweaksComponent droneTweaks = dronePrefab.AddComponent<DroneTweaksComponent>();
+                Main.Log("Created: " + droneTweaks);
+            }
+            else
+            {
+                Main.Log("already present");
+            }
+
+            dronePrefab = SRSingleton<GameContext>.Instance.LookupDirector.GetGadgetDefinition(Gadget.Id.DRONE_ADVANCED).prefab;
+            Main.Log("Injecting DroneTweaksComponent into Gadget.Id.DRONE_ADVANCED: " + dronePrefab);
+            if (dronePrefab.GetComponent<DroneTweaksComponent>() == null)
+            {
+                DroneTweaksComponent droneTweaks = dronePrefab.AddComponent<DroneTweaksComponent>();
+                Main.Log("Created: " + droneTweaks);
+            }
+            else
+            {
+                Main.Log("already present");
+            }
         }
 
         public override void ApplySettings()
@@ -41,12 +64,9 @@ namespace SRTweaks
                 droneGadget.countLimit = (int)DroneLimit;
             }
 
-            // Set drone movement speed
-            Drone[] drones = SRBehaviour.FindObjectsOfType<Drone>();
-            foreach (Drone drone in drones)
+            foreach (DroneTweaksComponent tweakComponent in SRBehaviour.FindObjectsOfType<DroneTweaksComponent>())
             {
-                drone.movement.movementSpeed = 180 * (DroneSpeedMultiplier / 100.0f);
-                drone.movement.rotationFacingSpeed = 1.0f * (DroneSpeedMultiplier / 100.0f);
+                tweakComponent.ApplySettings();
             }
         }
 
@@ -113,6 +133,26 @@ namespace SRTweaks
             droneLimit.Save(ref DroneTweaks.DroneLimit);
             droneSpeedMultiplier.Save(ref DroneTweaks.DroneSpeedMultiplier);
             droneInventoryMax.Save(ref DroneTweaks.DroneInventoryMax);
+        }
+    }
+
+    class DroneTweaksComponent : MonoBehaviour
+    {
+        public void OnEnable()
+        {
+            ApplySettings();
+        }
+
+        public void ApplySettings()
+        {
+            Main.Log("Apply drone tweaks: " + gameObject);
+
+            // Set drone movement speed
+            foreach (Drone drone in gameObject.GetComponentsInChildren<Drone>())
+            {
+                drone.movement.movementSpeed = 180 * (DroneTweaks.DroneSpeedMultiplier / 100.0f);
+                drone.movement.rotationFacingSpeed = 1.0f * (DroneTweaks.DroneSpeedMultiplier / 100.0f);
+            }
         }
     }
 }

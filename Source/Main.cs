@@ -9,10 +9,13 @@ namespace SRTweaks
 {
     public abstract class ITweakBase
     {
-        public abstract void PreLoad();
-        public abstract void GameLoaded();
+        public virtual void PreLoad() { }
 
-        public abstract void ApplySettings();
+        public virtual void Load() { }
+
+        public virtual void GameLoaded() { }
+
+        public virtual void ApplySettings() { }
 
         public abstract void SaveSettings(SRML.SR.SaveSystem.Data.CompoundDataPiece data);
         public abstract void LoadSettings(SRML.SR.SaveSystem.Data.CompoundDataPiece data);
@@ -105,6 +108,14 @@ namespace SRTweaks
                     tweak.SaveSettings(data);
                 }
             }));
+        }
+
+        public override void Load()
+        {
+            foreach (ITweakBase tweak in tweaks)
+            {
+                tweak.Load();
+            }
         }
 
         public static void ApplySettings()
