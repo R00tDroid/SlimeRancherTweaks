@@ -216,7 +216,7 @@ namespace SRTweaks
                         return false;
                     __instance.healthBurstAfter = Math.Min(__instance.healthBurstAfter,
                         __instance.worldModel.worldTime + 300.0);
-                    return false;;
+                    return false;
                 }
 
                 case PlayerState.Upgrade.ENERGY_1:
@@ -226,7 +226,7 @@ namespace SRTweaks
                         return false;
                     __instance.energyRecoverAfter = Math.Min(__instance.energyRecoverAfter,
                         __instance.worldModel.worldTime + 300.0);
-                    return false;;
+                    return false;
                 }
                 case PlayerState.Upgrade.ENERGY_2:
                 {
@@ -235,7 +235,7 @@ namespace SRTweaks
                         return false;
                     __instance.energyRecoverAfter = Math.Min(__instance.energyRecoverAfter,
                         __instance.worldModel.worldTime + 300.0);
-                    return false;;
+                    return false;
                 }
                 case PlayerState.Upgrade.ENERGY_3:
                 {
@@ -244,7 +244,7 @@ namespace SRTweaks
                         return false;
                     __instance.energyRecoverAfter = Math.Min(__instance.energyRecoverAfter,
                         __instance.worldModel.worldTime + 300.0);
-                    return false;;
+                    return false;
                 }
             }
 
