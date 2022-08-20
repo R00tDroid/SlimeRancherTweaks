@@ -1,3 +1,5 @@
+[![CodeFactor](https://www.codefactor.io/repository/github/r00tdroid/slimeranchertweaks/badge)](https://www.codefactor.io/repository/github/r00tdroid/slimeranchertweaks)
+
 # Slime Rancher Tweaks
 
 This mod allows users to tweak various things in Slime Rancher.
