@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.19)
 
 file(READ "${CMAKE_CURRENT_LIST_DIR}\\Source\\modinfo.json" ModInfoString)
 string(JSON ProjectVersion GET ${ModInfoString} "version")
@@ -52,7 +52,7 @@ set_target_properties(SRTweaks PROPERTIES
 )
 
 set_target_properties(SRTweaks PROPERTIES
-    DOTNET_TARGET_FRAMEWORK_VERSION "v4.6.1"
+    DOTNET_TARGET_FRAMEWORK_VERSION "v4.7.2"
 )
 
 target_compile_options(SRTweaks PUBLIC "/unsafe")
