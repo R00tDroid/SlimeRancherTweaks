@@ -61,3 +61,6 @@ crashlytics-build.properties
 /Libs1/Assembly-CSharp.dll
 /Libs?/GameLocation.txt
 /Source/Version.cs
+/Shared/Version.cs
+/SR1/Source/Version.cs
+/SR1/Source/ModInfo.json
