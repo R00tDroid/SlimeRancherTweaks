@@ -7,6 +7,22 @@ using SRML.SR.SaveSystem.Registry;
 
 namespace SRTweaks
 {
+    public class SettingsStorage
+    {
+        public SettingsStorage(SRML.SR.SaveSystem.Data.CompoundDataPiece inStorage)
+        {
+            storage = inStorage;
+        }
+
+        public T GetValue<T>(string key) => (T)storage.GetValue(key);
+
+        public void SetValue(string key, object value) => storage.SetValue(key, value);
+
+        public bool HasPiece(string key) => storage.HasPiece(key);
+
+        private SRML.SR.SaveSystem.Data.CompoundDataPiece storage;
+    }
+
     public abstract class ITweakBase
     {
         public virtual void PreLoad() { }
@@ -17,8 +33,8 @@ namespace SRTweaks
 
         public virtual void ApplySettings() { }
 
-        public abstract void SaveSettings(SRML.SR.SaveSystem.Data.CompoundDataPiece data);
-        public abstract void LoadSettings(SRML.SR.SaveSystem.Data.CompoundDataPiece data);
+        public abstract void SaveSettings(SettingsStorage data);
+        public abstract void LoadSettings(SettingsStorage data);
 
         public virtual ITweakSettingsUI GetSettingsUI()
         {
@@ -56,7 +72,7 @@ namespace SRTweaks
     {
         public static ITweakBase[] tweaks;
 
-        public static T GetSaveValue<T>(SRML.SR.SaveSystem.Data.CompoundDataPiece data, string name, T defaultValue)
+        public static T GetSaveValue<T>(SettingsStorage data, string name, T defaultValue)
         {
             if (data.HasPiece(name))
             {
@@ -93,19 +109,21 @@ namespace SRTweaks
 
             SaveRegistry.RegisterWorldDataPreLoadDelegate((WorldDataPreLoadDelegate) (data =>
             {
+                SettingsStorage storage = new SettingsStorage(data);
                 Log("Load");
                 foreach (ITweakBase tweak in tweaks)
                 {
-                    tweak.LoadSettings(data);
+                    tweak.LoadSettings(storage);
                 }
             }));
 
             SaveRegistry.RegisterWorldDataSaveDelegate((WorldDataSaveDelegate)(data =>
             {
+                SettingsStorage storage = new SettingsStorage(data);
                 Log("Save");
                 foreach (ITweakBase tweak in tweaks)
                 {
-                    tweak.SaveSettings(data);
+                    tweak.SaveSettings(storage);
                 }
             }));
         }

@@ -70,14 +70,14 @@ namespace SRTweaks
             }
         }
 
-        public override void SaveSettings(CompoundDataPiece data)
+        public override void SaveSettings(SettingsStorage data)
         {
             data.SetValue("DroneLimit", DroneLimit);
             data.SetValue("DroneSpeedMultiplier", DroneSpeedMultiplier);
             data.SetValue("DroneInventoryMax", DroneInventoryMax);
         }
 
-        public override void LoadSettings(CompoundDataPiece data)
+        public override void LoadSettings(SettingsStorage data)
         {
             DroneLimit = Main.GetSaveValue<uint>(data, "DroneLimit", 2);
             DroneSpeedMultiplier = Main.GetSaveValue<uint>(data, "DroneSpeedMultiplier", 100);

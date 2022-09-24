@@ -38,7 +38,7 @@ namespace SRTweaks
             }
         }
 
-        public override void SaveSettings(CompoundDataPiece data)
+        public override void SaveSettings(SettingsStorage data)
         {
             data.SetValue("AirNetDurabilityMultiplier", AirNetDurabilityMultiplier);
             data.SetValue("AirNetRecoverDelay", AirNetRecoverDelay);
@@ -47,7 +47,7 @@ namespace SRTweaks
             data.SetValue("ItemsPerFeed", ItemsPerFeed);
         }
 
-        public override void LoadSettings(CompoundDataPiece data)
+        public override void LoadSettings(SettingsStorage data)
         {
             AirNetDurabilityMultiplier = Main.GetSaveValue<uint>(data, "AirNetDurabilityMultiplier", 100);
             AirNetRecoverDelay = Main.GetSaveValue<float>(data, "AirNetRecoverDelay", 0.1f);

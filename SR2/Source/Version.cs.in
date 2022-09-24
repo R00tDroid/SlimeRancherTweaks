@@ -1,7 +1,0 @@
-namespace SRTweaks
-{
-    public class SRTweaksInfo
-    {
-        public static string ModVersion = "@ProjectVersion@";
-    }
-}

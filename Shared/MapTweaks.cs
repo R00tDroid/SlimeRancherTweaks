@@ -30,7 +30,7 @@ namespace SRTweaks
             harmony.Patch(methodOriginal, new HarmonyMethod(methodNew));
         }
 
-        public override void SaveSettings(CompoundDataPiece data)
+        public override void SaveSettings(SettingsStorage data)
         {
             data.SetValue("ShowGordos", ShowGordos);
             data.SetValue("ShowGordosWithoutDiscovery", ShowGordosWithoutDiscovery);
@@ -38,7 +38,7 @@ namespace SRTweaks
             data.SetValue("HidePlayer", HidePlayer);
         }
 
-        public override void LoadSettings(CompoundDataPiece data)
+        public override void LoadSettings(SettingsStorage data)
         {
             ShowGordos = Main.GetSaveValue<bool>(data, "ShowGordos", false);
             ShowGordosWithoutDiscovery = Main.GetSaveValue<bool>(data, "ShowGordosWithoutDiscovery", false);

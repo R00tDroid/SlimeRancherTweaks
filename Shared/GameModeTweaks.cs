@@ -96,7 +96,7 @@ namespace SRTweaks
             );
         }
 
-        public override void SaveSettings(CompoundDataPiece data)
+        public override void SaveSettings(SettingsStorage data)
         {
             data.SetValue("AllowTarrSpawns", AllowTarrSpawns);
             data.SetValue("SuppressTutorials", SuppressTutorials);
@@ -120,7 +120,7 @@ namespace SRTweaks
             }
         }
 
-        public override void LoadSettings(CompoundDataPiece data)
+        public override void LoadSettings(SettingsStorage data)
         {
             AllowTarrSpawns = Main.GetSaveValue<bool>(data, "AllowTarrSpawns", true);
             SuppressTutorials = Main.GetSaveValue<bool>(data, "SuppressTutorials", false);
