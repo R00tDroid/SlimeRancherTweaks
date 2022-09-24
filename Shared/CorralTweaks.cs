@@ -17,15 +17,15 @@ namespace SRTweaks
         public override void Load()
         {
             GameObject corralPrefab = SRSingleton<GameContext>.Instance.LookupDirector.GetPlotPrefab(LandPlot.Id.CORRAL);
-            Main.Log("Injecting CorralTweaksComponent into LandPlot.Id.CORRAL: " + corralPrefab);
+            Main.PluginLog("Injecting CorralTweaksComponent into LandPlot.Id.CORRAL: " + corralPrefab);
             if (corralPrefab.GetComponent<CorralTweaksComponent>() == null)
             {
                 CorralTweaksComponent corralTweaks = corralPrefab.AddComponent<CorralTweaksComponent>();
-                Main.Log("Created: " + corralTweaks);
+                Main.PluginLog("Created: " + corralTweaks);
             }
             else
             {
-                Main.Log("already present");
+                Main.PluginLog("already present");
             }
         }
 
@@ -122,7 +122,7 @@ namespace SRTweaks
 
         public void ApplySettings()
         {
-            Main.Log("Apply corral tweaks: " + gameObject);
+            Main.PluginLog("Apply corral tweaks: " + gameObject);
 
             // Set airnet durability by reducing hit damage
             float airNetDurability = CorralTweaks.AirNetDurabilityMultiplier / 100.0f;
@@ -140,7 +140,7 @@ namespace SRTweaks
 
                 if (plortCollector.model.collectorNextTime - plortCollector.timeDir.worldModel.worldTime > 3600.0 * (double)plortCollector.collectPeriod)
                 {
-                    Main.Log("Reset plort collector schedule");
+                    Main.PluginLog("Reset plort collector schedule");
                     plortCollector.model.collectorNextTime = plortCollector.timeDir.worldModel.worldTime;
                 }
             }

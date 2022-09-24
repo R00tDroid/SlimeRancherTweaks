@@ -179,7 +179,7 @@ namespace SRTweaks
                 }
                 else
                 {
-                    Main.Log("Unsupported type: " + typeof(T).FullName);
+                    Main.PluginLog("Unsupported type: " + typeof(T).FullName);
                 }
             }
         }
@@ -200,7 +200,7 @@ namespace SRTweaks
             }
             else
             {
-                Main.Log("Unsupported type: " + typeof(T).FullName);
+                Main.PluginLog("Unsupported type: " + typeof(T).FullName);
             }
         }
 
@@ -229,7 +229,7 @@ namespace SRTweaks
             }
             else
             {
-                Main.Log("Unsupported type: " + typeof(T).FullName);
+                Main.PluginLog("Unsupported type: " + typeof(T).FullName);
             }
         }
     }

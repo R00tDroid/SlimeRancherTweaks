@@ -59,12 +59,12 @@ namespace SRTweaks
 
             MethodInfo methodOriginal = typeof(PlayerModel).GetMethod("Reset");
             MethodInfo methodNew = typeof(GameModeTweaks).GetMethod("PlayerModel_ResetPatch", BindingFlags.Static | BindingFlags.Public);
-            Main.Log("Patching PlayerModel.Reset: " + methodOriginal + " > " + methodNew);
+            Main.PluginLog("Patching PlayerModel.Reset: " + methodOriginal + " > " + methodNew);
             harmony.Patch(methodOriginal, null, new HarmonyMethod(methodNew));
 
             methodOriginal = typeof(PlayerModel).GetMethod("ApplyUpgrade");
             methodNew = typeof(GameModeTweaks).GetMethod("PlayerModel_ApplyUpgradePatch", BindingFlags.Static | BindingFlags.Public);
-            Main.Log("Patching PlayerModel.ApplyUpgrade: " + methodOriginal + " > " + methodNew);
+            Main.PluginLog("Patching PlayerModel.ApplyUpgrade: " + methodOriginal + " > " + methodNew);
             harmony.Patch(methodOriginal, new HarmonyMethod(methodNew));
         }
 

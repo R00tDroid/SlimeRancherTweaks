@@ -110,7 +110,7 @@ namespace SRTweaks
             SaveRegistry.RegisterWorldDataPreLoadDelegate((WorldDataPreLoadDelegate) (data =>
             {
                 SettingsStorage storage = new SettingsStorage(data);
-                Log("Load");
+                PluginLog("Load");
                 foreach (ITweakBase tweak in tweaks)
                 {
                     tweak.LoadSettings(storage);
@@ -120,7 +120,7 @@ namespace SRTweaks
             SaveRegistry.RegisterWorldDataSaveDelegate((WorldDataSaveDelegate)(data =>
             {
                 SettingsStorage storage = new SettingsStorage(data);
-                Log("Save");
+                PluginLog("Save");
                 foreach (ITweakBase tweak in tweaks)
                 {
                     tweak.SaveSettings(storage);
@@ -144,7 +144,7 @@ namespace SRTweaks
             }
         }
 
-        public static void Log(string logString)
+        public static void PluginLog(string logString)
         {
             Debug.Log("SRTweaks> " + logString);
         }

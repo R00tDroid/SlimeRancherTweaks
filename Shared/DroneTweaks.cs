@@ -19,7 +19,7 @@ namespace SRTweaks
             MethodInfo methodOriginal = typeof(DroneAmmo).GetMethod("GetSlotMaxCount", new Type[] { });
             MethodInfo methodNew = typeof(DroneTweaks).GetMethod("GetDroneInventoryLimit", BindingFlags.Static | BindingFlags.Public);
 
-            Main.Log("Patching drone.ammo.GetSlotMaxCount: " + methodOriginal + " > " + methodNew);
+            Main.PluginLog("Patching drone.ammo.GetSlotMaxCount: " + methodOriginal + " > " + methodNew);
 
             Harmony harmony = HarmonyPatcher.GetInstance();
             harmony.Patch(methodOriginal, new HarmonyMethod(methodNew));
@@ -28,27 +28,27 @@ namespace SRTweaks
         public override void Load()
         {
             GameObject dronePrefab = SRSingleton<GameContext>.Instance.LookupDirector.GetGadgetDefinition(Gadget.Id.DRONE).prefab;
-            Main.Log("Injecting DroneTweaksComponent into Gadget.Id.DRONE: " + dronePrefab);
+            Main.PluginLog("Injecting DroneTweaksComponent into Gadget.Id.DRONE: " + dronePrefab);
             if (dronePrefab.GetComponent<DroneTweaksComponent>() == null)
             {
                 DroneTweaksComponent droneTweaks = dronePrefab.AddComponent<DroneTweaksComponent>();
-                Main.Log("Created: " + droneTweaks);
+                Main.PluginLog("Created: " + droneTweaks);
             }
             else
             {
-                Main.Log("already present");
+                Main.PluginLog("already present");
             }
 
             dronePrefab = SRSingleton<GameContext>.Instance.LookupDirector.GetGadgetDefinition(Gadget.Id.DRONE_ADVANCED).prefab;
-            Main.Log("Injecting DroneTweaksComponent into Gadget.Id.DRONE_ADVANCED: " + dronePrefab);
+            Main.PluginLog("Injecting DroneTweaksComponent into Gadget.Id.DRONE_ADVANCED: " + dronePrefab);
             if (dronePrefab.GetComponent<DroneTweaksComponent>() == null)
             {
                 DroneTweaksComponent droneTweaks = dronePrefab.AddComponent<DroneTweaksComponent>();
-                Main.Log("Created: " + droneTweaks);
+                Main.PluginLog("Created: " + droneTweaks);
             }
             else
             {
-                Main.Log("already present");
+                Main.PluginLog("already present");
             }
         }
 
@@ -145,7 +145,7 @@ namespace SRTweaks
 
         public void ApplySettings()
         {
-            Main.Log("Apply drone tweaks: " + gameObject);
+            Main.PluginLog("Apply drone tweaks: " + gameObject);
 
             // Set drone movement speed
             foreach (Drone drone in gameObject.GetComponentsInChildren<Drone>())

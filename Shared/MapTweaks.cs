@@ -21,12 +21,12 @@ namespace SRTweaks
 
             MethodInfo methodOriginal = typeof(GordoDisplayOnMap).GetMethod("ShowOnMap");
             MethodInfo methodNew = typeof(MapTweaks).GetMethod("GordoShowOnMap");
-            Main.Log("Patching GordoDisplayOnMap.ShowOnMap: " + methodOriginal + " > " + methodNew);
+            Main.PluginLog("Patching GordoDisplayOnMap.ShowOnMap: " + methodOriginal + " > " + methodNew);
             harmony.Patch(methodOriginal, new HarmonyMethod(methodNew));
 
             methodOriginal = typeof(PlayerDisplayOnMap).GetMethod("ShowOnMap");
             methodNew = typeof(MapTweaks).GetMethod("PlayerShowOnMap");
-            Main.Log("Patching PlayerDisplayOnMap.ShowOnMap: " + methodOriginal + " > " + methodNew);
+            Main.PluginLog("Patching PlayerDisplayOnMap.ShowOnMap: " + methodOriginal + " > " + methodNew);
             harmony.Patch(methodOriginal, new HarmonyMethod(methodNew));
         }
 
