@@ -23,7 +23,6 @@ LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\U
 LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.PhysicsModule.dll")
 LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.InputLegacyModule.dll")
 LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.ParticleSystemModule.dll")
-LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.ParticleSystemModule.dll")
 
 LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\Unity.TextMeshPro.dll")
 LIST(APPEND VS_DOTNET_REFERENCES "${GameLocation}\\SlimeRancher_Data\\Managed\\UnityEngine.UI.dll")
